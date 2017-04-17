@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wf2311</groupId>
-    <artifactId>jfree-commons-test</artifactId>
+    <artifactId>jfeng-commons-test</artifactId>
     <version>0.0.1</version>
 
     <dependencies>
@@ -19,7 +19,7 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wf2311.commons</groupId>
+            <groupId>com.wf2311</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
     </dependencies>

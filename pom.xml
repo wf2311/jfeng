@@ -9,9 +9,10 @@
     <packaging>pom</packaging>
     <version>0.0.1</version>
     <modules>
-        <module>jfeng-commons-test</module>
-        <module>jfree-test-api</module>
-        <module>jfree-test-jfinal-api</module>
+        <!--<module>jfeng-commons-test</module>-->
+        <!--<module>jfeng-test-api</module>-->
+        <!--<module>jfeng-test-jfinal-api</module>-->
+        <module>jfeng-lang</module>
     </modules>
 
     <dependencyManagement>
@@ -22,11 +23,54 @@
                 <version>4.12</version>
             </dependency>
             <dependency>
-                <groupId>com.wf2311.commons</groupId>
+                <groupId>com.wf2311</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>0.0.1</version>
+                <version>0.0.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>wf2311-mvn-repo</id>
+            <url>http://maven.wf2311.com/repo/</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- 编译插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <version>3.5.1</version>
+            </plugin>
+            <!-- 发布源码插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
