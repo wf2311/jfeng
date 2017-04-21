@@ -56,9 +56,10 @@ public class CollectionUtilsTest {
     @Test
     public void test2_distinctByKey() {
         List<List<A>> collect = IntStream.range(0, 100).mapToObj(i -> IntStream.range(0, 10000)
-                .mapToObj(j -> new A(RandomUtil.getInt(0, 100), i)).collect(toList())
+                .mapToObj(j -> new A(RandomUtil.getInt(i, 200), i)).collect(toList())
         ).collect(toList());
-        collect.forEach(list -> System.out.println(list.get(0).getValue() + "\t:\t" + list.stream().filter(CollectionUtils.distinctByKey(A::getKey)).count()));
+        collect.forEach(list -> System.out.println(list.get(0).getValue() + "\t:\t" + list.stream()
+                .filter(CollectionUtils.distinctByKey(A::getKey)).count()));
 
     }
 
@@ -66,16 +67,16 @@ public class CollectionUtilsTest {
         private int key;
         private int value;
 
-        public A(int key, int value) {
+        A(int key, int value) {
             this.key = key;
             this.value = value;
         }
 
-        public int getKey() {
+        int getKey() {
             return key;
         }
 
-        public int getValue() {
+        int getValue() {
             return value;
         }
     }
