@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -20,40 +19,56 @@ import java.util.stream.IntStream;
  */
 public class DateTimeUtilsTest extends TestCase {
 
+    public void test_style() {
+        Assert.assertEquals(FormatterStyle.YYYY_MM_DD_HH_MM_SS, DateTimeUtils.style("2017-04-27 21:29:32"));
+        Assert.assertEquals(FormatterStyle.SLASH_YYYY_MM_DD, DateTimeUtils.style("2017/04/27"));
+        Assert.assertEquals(FormatterStyle.YYYY_MM_DD, DateTimeUtils.style("2017-04-27"));
+        Assert.assertEquals(FormatterStyle.SLASH_YYYY_MM_DD_HH_MM_SS, DateTimeUtils.style("2017/04/27 21:29:32"));
+        Assert.assertEquals(FormatterStyle.YYYY_MM, DateTimeUtils.style("2017-04"));
+        Assert.assertEquals(FormatterStyle.YYYY_MM_DD_HH_MM, DateTimeUtils.style("2017-04-27 21:29"));
+        Assert.assertEquals(FormatterStyle.YYYY_MM_DD_HH, DateTimeUtils.style("2017-04-27 21"));
+        Assert.assertEquals(FormatterStyle.YYYYMM, DateTimeUtils.style("201704"));
+        Assert.assertEquals(FormatterStyle.YYYYMMDD, DateTimeUtils.style("20170427"));
+        Assert.assertEquals(FormatterStyle.YYYYMMDDHH, DateTimeUtils.style("2017042721"));
+        Assert.assertEquals(FormatterStyle.YYYY_MM_DD_HH_MM, DateTimeUtils.style("2015-10-11 14:14"));
+        Assert.assertEquals(FormatterStyle.MM_DD, DateTimeUtils.style("10-11"));
+    }
 
-    @Test
+    public void test_style1() {
+        IntStream.range(0, 1).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateUtils.getStyle(value))));
+    }
+
     public void testGetDateStyle() throws Exception {
         IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateUtils.getDateStyle(value))));
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateUtils.getStyle(value))));
     }
 
 
-    @Test
     public void testDateToLocalDate() throws Exception {
         LocalDate result = DateTimeUtils.dateToLocalDate(new GregorianCalendar(2017, Calendar.APRIL, 21, 15, 28).getTime());
         Assert.assertEquals(LocalDate.of(2017, java.time.Month.APRIL, 21), result);
     }
 
-    @Test
     public void testLocalDateTimeToDate() throws Exception {
         Date result = DateTimeUtils.localDateTimeToDate(LocalDateTime.of(2017, Month.APRIL, 21, 15, 28, 24));
         Assert.assertEquals(new GregorianCalendar(2017, Calendar.APRIL, 21, 15, 28).getTime(), result);
     }
 
     public void test_parse() {
-        LocalDateTime parse = DateTimeUtils.parse("2017年04月21日",FormatterStyle.CN_YYYY_MM_DD);
+        LocalDateTime parse = DateTimeUtils.parse("2017年04月21日", FormatterStyle.CN_YYYY_MM_DD);
         System.out.println(DateTimeUtils.format(parse));
     }
 
     public void test_parse2() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FormatterStyle.CN_YYYY_MM_DD_HH_MM_SS.getValue());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FormatterStyle.CN_YYYY_MM_DD_HH_MM_SS.value());
         formatter.withResolverStyle(ResolverStyle.LENIENT);
         LocalDateTime parse = LocalDateTime.parse("2017年04月21日 16:35:10", formatter);
         System.out.println(DateTimeUtils.format(parse));
     }
 
     public void test_parse3() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FormatterStyle.CN_YYYY_MM_DD.getValue());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FormatterStyle.CN_YYYY_MM_DD.value());
 //        formatter.withResolverStyle(ResolverStyle.LENIENT);
         formatter.withZone(ZoneId.systemDefault());
         LocalDate parse = LocalDate.parse(t1, formatter);
@@ -128,9 +143,14 @@ public class DateTimeUtilsTest extends TestCase {
         Assert.assertEquals(LocalDateTime.of(LocalDate.of(2017, 12, 31), LocalTime.MAX), endOfYear);
     }
 
-    public void test1(){
+    public void test1() {
         LocalDateTime parse = LocalDateTime.parse(t1, DateTimeFormatter.ISO_DATE);
         System.out.println(parse);
+    }
+
+    public void test_style2() {
+        Date date = DateUtils.parseToDate("2015-10");
+        System.out.println(date);
     }
 
 }

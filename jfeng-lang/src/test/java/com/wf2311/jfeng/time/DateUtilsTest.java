@@ -40,13 +40,13 @@ public class DateUtilsTest {
     @Test
     public void testGetDateStyle() throws Exception {
         IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateUtils.getDateStyle(value)))
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateUtils.getStyle(value)))
         );
     }
 
     @Test
     public void testGetDateStyle2() throws Exception {
-        FormatterStyle dateStyle = DateUtils.getDateStyle("2017年04月21日 13:27:59");
+        FormatterStyle dateStyle = DateUtils.getStyle("2017年04月21日 13:27:59");
         System.out.println(dateStyle);
     }
 

@@ -1,12 +1,11 @@
 package com.wf2311.jfeng.time;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Predicate;
 
 /**
  * @author wf2311
@@ -34,29 +33,54 @@ public final class DateTimeUtils {
     }
 
     private static DateTimeFormatter formatter(FormatterStyle dateStyle) {
-        return formatter(dateStyle.getValue());
+        return formatter(dateStyle.value());
     }
 
 
     /**
      * 获取时间字符串的格式。如果在与设定的格式{@link FormatterStyle}中不存在，返回<code>null</code>
      */
-    private static FormatterStyle style(String text) {
-        for (FormatterStyle style : FormatterStyle.values()) {
-            if (style.isShowOnly()) {
-                continue;
-            }
-            if (text != null) {
-                try {
-                    LocalDateTime parse = LocalDateTime.parse(text, formatter(style));
-                    if (parse != null) {
-                        return style;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
+    public static FormatterStyle style(String text) {
+        if (text == null || "".equals(text.trim())) {
+            return null;
+        }
+        FormatterStyle style;
+        style = _style0(Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
+        if (style != null) {
+            return style;
+        }
+        style = _style0(Type.DATE, s -> LocalDate.parse(text, formatter(s)) != null);
+        if (style != null) {
+            return style;
+        }
+        style = _style0(Type.TIME, s -> LocalTime.parse(text, formatter(s)) != null);
+        if (style != null) {
+            return style;
+        }
+        style = _style0(Type.YEAR_MONTH, s -> YearMonth.parse(text, formatter(s)) != null);
+        if (style != null) {
+            return style;
+        }
+        style = _style0(Type.MONTH_DAY, s -> MonthDay.parse(text, formatter(s)) != null);
+        if (style != null) {
+            return style;
         }
         return null;
+    }
+
+    private static FormatterStyle _style0(Type type, Predicate<FormatterStyle> predicate) {
+        return Arrays.stream(FormatterStyle.values())
+                .filter(style -> {
+                    if (style.showOnly() || !type.equals(style.type())) {
+                        return false;
+                    }
+                    try {
+                        return predicate.test(style);
+                    } catch (Exception ignored) {
+                    }
+                    return false;
+                }).findAny()
+                .orElse(null);
     }
 
     /**
@@ -86,7 +110,7 @@ public final class DateTimeUtils {
      */
     public static LocalDateTime parse(String text) {
         FormatterStyle style = style(text);
-        if (style == null) {
+        if (style == null || !Type.DATETIME.equals(style.type())) {
             return null;
         }
         return parse(text, style);
@@ -134,6 +158,20 @@ public final class DateTimeUtils {
      */
     public static LocalDateTime endOfYear(LocalDateTime dateTime) {
         return LocalDateTime.of(LocalDate.of(dateTime.getYear(), 12, 31), LocalTime.MAX);
+    }
+
+    /**
+     * 所在日期的同月开始时刻
+     */
+    public static LocalDateTime startOfMonth(LocalDateTime dateTime) {
+        return LocalDateTime.of(LocalDate.of(dateTime.getYear(), dateTime.getMonth(), 1), LocalTime.MIN);
+    }
+
+    /**
+     * 所在日期的同月结束时刻
+     */
+    public static LocalDateTime endOfMonth(LocalDateTime dateTime) {
+        return startOfMonth(dateTime).plusMonths(1).minusNanos(1);
     }
 
 
