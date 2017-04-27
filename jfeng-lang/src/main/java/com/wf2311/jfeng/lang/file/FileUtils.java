@@ -2,7 +2,6 @@ package com.wf2311.jfeng.lang.file;
 
 
 import com.wf2311.jfeng.exception.WfException;
-import sun.awt.windows.WFontConfiguration;
 
 import java.io.*;
 import java.text.SimpleDateFormat;

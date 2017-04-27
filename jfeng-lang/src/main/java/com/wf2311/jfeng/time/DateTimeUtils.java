@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -26,6 +28,16 @@ public final class DateTimeUtils {
     private DateTimeUtils() {
     }
 
+    private final static Map<Object, Type> support = new HashMap<>();
+
+    static {
+        support.put(LocalDate.class, Type.DATE);
+        support.put(LocalDateTime.class, Type.DATETIME);
+        support.put(LocalTime.class, Type.TIME);
+        support.put(MonthDay.class, Type.MONTH_DAY);
+        support.put(YearMonth.class, Type.YEAR_MONTH);
+    }
+
     private static DateTimeFormatter formatter(String pattern) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         formatter.withResolverStyle(ResolverStyle.LENIENT);
@@ -36,6 +48,14 @@ public final class DateTimeUtils {
         return formatter(dateStyle.value());
     }
 
+
+    private static Type type(Object support){
+        Type type = DateTimeUtils.support.get(support);
+        if (type == null) {
+            throw new IllegalArgumentException("不支持的转换类型：" + support);
+        }
+        return type;
+    }
 
     /**
      * 获取时间字符串的格式。如果在与设定的格式{@link FormatterStyle}中不存在，返回<code>null</code>
@@ -114,6 +134,58 @@ public final class DateTimeUtils {
             return null;
         }
         return parse(text, style);
+    }
+
+    /**
+     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     *
+     * @param <T>  取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> T parse(String text, T t) {
+        FormatterStyle style=style(text);
+        if (style==null){
+            return null;
+        }
+        return parse(text, style, t);
+    }
+
+    /**
+     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     *
+     * @param <T>  取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> T parse(String text, String pattern, T t) {
+        Type type = type(t);
+        try {
+            switch (type) {
+                case DATE:
+                    return (T) LocalDate.parse(text, formatter(pattern));
+                case DATETIME:
+                    return (T) LocalDateTime.parse(text, formatter(pattern));
+                case TIME:
+                    return (T) LocalTime.parse(text, formatter(pattern));
+                case MONTH_DAY:
+                    return (T) MonthDay.parse(text, formatter(pattern));
+                case YEAR_MONTH:
+                    return (T) YearMonth.parse(text, formatter(pattern));
+                default:
+                    return null;
+            }
+        }catch (Exception ignore){
+            return null;
+        }
+    }
+
+    /**
+     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     *
+     * @param <T>  取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> T parse(String text, FormatterStyle style, T t) {
+        return parse(text, style.value(), t);
     }
 
     /**
