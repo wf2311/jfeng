@@ -46,7 +46,7 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDateStyle2() throws Exception {
-        FormatterStyle dateStyle = DateUtils.getStyle("2017年04月21日 13:27:59");
+        DateStyle dateStyle = DateUtils.getStyle("2017年04月21日 13:27:59");
         System.out.println(dateStyle);
     }
 
@@ -73,13 +73,13 @@ public class DateUtilsTest {
 
     @Test
     public void testParseToDate2() throws Exception {
-        Date result = DateUtils.parseToDate(date, FormatterStyle.YYYY_MM_DD_HH_MM_SS);
+        Date result = DateUtils.parseToDate(date, DateStyle.YYYY_MM_DD_HH_MM_SS);
         Assert.assertEquals(calendar.getTime(), result);
     }
 
     @Test
     public void testParseToDate3() throws Exception {
-        Date result = DateUtils.parseToDate(date, FormatterStyle.YYYY_MM_DD_HH_MM_SS);
+        Date result = DateUtils.parseToDate(date, DateStyle.YYYY_MM_DD_HH_MM_SS);
         Assert.assertEquals(calendar.getTime(), result);
     }
 
@@ -97,7 +97,7 @@ public class DateUtilsTest {
 
     @Test
     public void testParseToString() throws Exception {
-        String result = DateUtils.parseToString(calendar.getTime(), FormatterStyle.YYYY_MM_DD_HH_MM_SS);
+        String result = DateUtils.parseToString(calendar.getTime(), DateStyle.YYYY_MM_DD_HH_MM_SS);
         Assert.assertEquals(date, result);
     }
 
@@ -109,7 +109,7 @@ public class DateUtilsTest {
 
     @Test
     public void testParseToString3() throws Exception {
-        String result = DateUtils.parseToString(calendar.getTime(), FormatterStyle.YYYY_MM);
+        String result = DateUtils.parseToString(calendar.getTime(), DateStyle.YYYY_MM);
         Assert.assertEquals("replaceMeWithExpectedResult", result);
     }
 
@@ -127,7 +127,7 @@ public class DateUtilsTest {
 
     @Test
     public void testParseToString5() throws Exception {
-        String result = DateUtils.parseToString(date, FormatterStyle.YYYY_MM);
+        String result = DateUtils.parseToString(date, DateStyle.YYYY_MM);
         Assert.assertEquals("replaceMeWithExpectedResult", result);
     }
 
@@ -139,19 +139,19 @@ public class DateUtilsTest {
 
     @Test
     public void testParseToString7() throws Exception {
-        String result = DateUtils.parseToString(date, FormatterStyle.YYYY_MM, "newPattern");
+        String result = DateUtils.parseToString(date, DateStyle.YYYY_MM, "newPattern");
         Assert.assertEquals("replaceMeWithExpectedResult", result);
     }
 
     @Test
     public void testParseToString8() throws Exception {
-        String result = DateUtils.parseToString(date, "oldPattern", FormatterStyle.YYYY_MM);
+        String result = DateUtils.parseToString(date, "oldPattern", DateStyle.YYYY_MM);
         Assert.assertEquals("replaceMeWithExpectedResult", result);
     }
 
     @Test
     public void testParseToString9() throws Exception {
-        String result = DateUtils.parseToString(date, FormatterStyle.YYYY_MM, FormatterStyle.YYYY_MM);
+        String result = DateUtils.parseToString(date, DateStyle.YYYY_MM, DateStyle.YYYY_MM);
         Assert.assertEquals("replaceMeWithExpectedResult", result);
     }
 

@@ -3,13 +3,12 @@ package com.wf2311.jfeng.time;
 /**
  * 日期格式
  * <strong>
- * 将最常用的转换格式放在最前面，可以提高{@link DateUtils#getStyle(String)}的 转换效率
+ * 将最常用的转换格式放在最前面，可以提高{@link DateHelper#style(String)}的 转换效率
  * </strong>
  *
  * @author wf2311
- * @date 2016/05/13 13:57.
  */
-public enum FormatterStyle {
+public enum DateStyle {
 
     YYYY_MM_DD_HH_MM_SS("yyyy-MM-dd HH:mm:ss", Type.DATETIME, false),
 
@@ -129,7 +128,7 @@ public enum FormatterStyle {
 
     private Type type;
 
-    FormatterStyle(String value, Type type, boolean isShowOnly) {
+    DateStyle(String value, Type type, boolean isShowOnly) {
         this.value = value;
         this.showOnly = isShowOnly;
         this.type = type;

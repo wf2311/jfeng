@@ -10,24 +10,25 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 /**
+ * java8 时间工具类
+ *
  * @author wf2311
- * @time 2017/04/11 13:19.
  */
-public final class DateTimeUtils {
+public final class DateHelper {
 
     /**
-     * 默认格式样式： {@link FormatterStyle#YYYY_MM_DD_HH_MM_SS}
+     * 默认格式样式： {@link DateStyle#YYYY_MM_DD_HH_MM_SS}
      */
-    private static final FormatterStyle DEFAULT_FORMATTER_STYLE = FormatterStyle.YYYY_MM_DD_HH_MM_SS;
+    public static final DateStyle DEFAULT_FORMATTER_STYLE = DateStyle.YYYY_MM_DD_HH_MM_SS;
 
     /**
      * 默认格式
      */
-    private static final DateTimeFormatter DEFAULT_FORMATTER = formatter(DEFAULT_FORMATTER_STYLE);
+    public static final DateTimeFormatter DEFAULT_FORMATTER = formatter(DEFAULT_FORMATTER_STYLE);
 
     private final static Map<Object, Type> support = new HashMap<>();
 
-    private DateTimeUtils() {
+    private DateHelper() {
     }
 
     static {
@@ -38,19 +39,24 @@ public final class DateTimeUtils {
         support.put(YearMonth.class, Type.YEAR_MONTH);
     }
 
-    private static DateTimeFormatter formatter(String pattern) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        formatter.withResolverStyle(ResolverStyle.LENIENT);
+    /**
+     * 创建{@link DateTimeFormatter}
+     */
+    public static DateTimeFormatter formatter(String pattern) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern).withResolverStyle(ResolverStyle.LENIENT);
         return formatter;
     }
 
-    private static DateTimeFormatter formatter(FormatterStyle dateStyle) {
+    /**
+     * 创建{@link DateTimeFormatter}
+     */
+    public static DateTimeFormatter formatter(DateStyle dateStyle) {
         return formatter(dateStyle.value());
     }
 
 
     private static Type type(Object support) {
-        Type type = DateTimeUtils.support.get(support);
+        Type type = DateHelper.support.get(support);
         if (type == null) {
             throw new IllegalArgumentException("不支持的转换类型：" + support);
         }
@@ -58,13 +64,13 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 获取时间字符串的格式。如果在与设定的格式{@link FormatterStyle}中不存在，返回<code>null</code>
+     * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
      */
-    public static FormatterStyle style(String text) {
+    public static DateStyle style(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
-        FormatterStyle style;
+        DateStyle style;
         style = _style0(Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
@@ -88,8 +94,8 @@ public final class DateTimeUtils {
         return null;
     }
 
-    private static FormatterStyle _style0(Type type, Predicate<FormatterStyle> predicate) {
-        return Arrays.stream(FormatterStyle.values())
+    private static DateStyle _style0(Type type, Predicate<DateStyle> predicate) {
+        return Arrays.stream(DateStyle.values())
                 .filter(style -> {
                     if (style.showOnly() || !type.equals(style.type())) {
                         return false;
@@ -104,7 +110,7 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text, String pattern) {
         try {
@@ -115,9 +121,9 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
-    public static LocalDateTime parse(String text, FormatterStyle style) {
+    public static LocalDateTime parse(String text, DateStyle style) {
         try {
             return LocalDateTime.parse(text, formatter(style));
         } catch (Exception e) {
@@ -126,10 +132,10 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text) {
-        FormatterStyle style = style(text);
+        DateStyle style = style(text);
         if (style == null || !Type.DATETIME.equals(style.type())) {
             return null;
         }
@@ -137,30 +143,30 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
     public static <T> LocalDateTime parse(String text, T t) {
-        FormatterStyle style = style(text);
+        DateStyle style = style(text);
         return parse(text, style, t);
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
-    public static <T> LocalDateTime parse(String text, FormatterStyle style, T t) {
+    public static <T> LocalDateTime parse(String text, DateStyle style, T t) {
         return parse(text, style.value(), t);
     }
 
     /**
-     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
     public static <T> LocalDateTime parse(String text, String pattern, T t) {
@@ -190,13 +196,13 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, T t) {
-        FormatterStyle style = style(text);
+        DateStyle style = style(text);
         if (style == null) {
             return null;
         }
@@ -204,9 +210,9 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, String pattern, T t) {
@@ -232,12 +238,12 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
-    public static <T> T parseToObject(String text, FormatterStyle style, T t) {
+    public static <T> T parseToObject(String text, DateStyle style, T t) {
         return parseToObject(text, style.value(), t);
     }
 
@@ -258,7 +264,7 @@ public final class DateTimeUtils {
     /**
      * 将{@link LocalDateTime}格式化为字符串
      */
-    public static String format(LocalDateTime dateTime, FormatterStyle style) {
+    public static String format(LocalDateTime dateTime, DateStyle style) {
         return dateTime.format(formatter(style));
     }
 
@@ -273,7 +279,7 @@ public final class DateTimeUtils {
      * 所在日期的同年开始时刻
      */
     public static String startOfYear(String text) {
-        FormatterStyle style = style(text);
+        DateStyle style = style(text);
         return format(startOfYear(parse(text, style)), style);
     }
 
