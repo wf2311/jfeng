@@ -13,6 +13,7 @@ import java.util.function.Predicate;
  * java8 时间工具类
  *
  * @author wf2311
+ * @date 2016/04/21 13:52.
  */
 public final class DateHelper {
 
@@ -22,21 +23,21 @@ public final class DateHelper {
     public static final DateStyle DEFAULT_FORMATTER_STYLE = DateStyle.YYYY_MM_DD_HH_MM_SS;
 
     /**
-     * 默认格式
+     * 默认转换格式
      */
     public static final DateTimeFormatter DEFAULT_FORMATTER = formatter(DEFAULT_FORMATTER_STYLE);
 
-    private final static Map<Object, Type> support = new HashMap<>();
+    private final static Map<Object, DateStyle.Type> support = new HashMap<>();
 
     private DateHelper() {
     }
 
     static {
-        support.put(LocalDate.class, Type.DATE);
-        support.put(LocalDateTime.class, Type.DATETIME);
-        support.put(LocalTime.class, Type.TIME);
-        support.put(MonthDay.class, Type.MONTH_DAY);
-        support.put(YearMonth.class, Type.YEAR_MONTH);
+        support.put(LocalDate.class, DateStyle.Type.DATE);
+        support.put(LocalDateTime.class, DateStyle.Type.DATETIME);
+        support.put(LocalTime.class, DateStyle.Type.TIME);
+        support.put(MonthDay.class, DateStyle.Type.MONTH_DAY);
+        support.put(YearMonth.class, DateStyle.Type.YEAR_MONTH);
     }
 
     /**
@@ -55,8 +56,8 @@ public final class DateHelper {
     }
 
 
-    private static Type type(Object support) {
-        Type type = DateHelper.support.get(support);
+    private static DateStyle.Type type(Object support) {
+        DateStyle.Type type = DateHelper.support.get(support);
         if (type == null) {
             throw new IllegalArgumentException("不支持的转换类型：" + support);
         }
@@ -71,30 +72,30 @@ public final class DateHelper {
             return null;
         }
         DateStyle style;
-        style = _style0(Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
+        style = _style0(DateStyle.Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.DATE, s -> LocalDate.parse(text, formatter(s)) != null);
+        style = _style0(DateStyle.Type.DATE, s -> LocalDate.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.TIME, s -> LocalTime.parse(text, formatter(s)) != null);
+        style = _style0(DateStyle.Type.TIME, s -> LocalTime.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.YEAR_MONTH, s -> YearMonth.parse(text, formatter(s)) != null);
+        style = _style0(DateStyle.Type.YEAR_MONTH, s -> YearMonth.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.MONTH_DAY, s -> MonthDay.parse(text, formatter(s)) != null);
+        style = _style0(DateStyle.Type.MONTH_DAY, s -> MonthDay.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
         return null;
     }
 
-    private static DateStyle _style0(Type type, Predicate<DateStyle> predicate) {
+    private static DateStyle _style0(DateStyle.Type type, Predicate<DateStyle> predicate) {
         return Arrays.stream(DateStyle.values())
                 .filter(style -> {
                     if (style.showOnly() || !type.equals(style.type())) {
@@ -108,6 +109,8 @@ public final class DateHelper {
                 }).findAny()
                 .orElse(null);
     }
+
+    //========================================格式转换=====================================
 
     /**
      * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
@@ -136,7 +139,7 @@ public final class DateHelper {
      */
     public static LocalDateTime parse(String text) {
         DateStyle style = style(text);
-        if (style == null || !Type.DATETIME.equals(style.type())) {
+        if (style == null || !DateStyle.Type.DATETIME.equals(style.type())) {
             return null;
         }
         return parse(text, style);
@@ -170,7 +173,7 @@ public final class DateHelper {
      * @throws IllegalArgumentException
      */
     public static <T> LocalDateTime parse(String text, String pattern, T t) {
-        Type type = type(t);
+        DateStyle.Type type = type(t);
         try {
             switch (type) {
                 case DATE:
@@ -216,7 +219,7 @@ public final class DateHelper {
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, String pattern, T t) {
-        Type type = type(t);
+        DateStyle.Type type = type(t);
         try {
             switch (type) {
                 case DATE:
@@ -268,6 +271,10 @@ public final class DateHelper {
         return dateTime.format(formatter(style));
     }
 
+    //======================================格式转换 结束===================================
+
+    //========================================时间变更=====================================
+
     /**
      * 所在日期的同年开始时刻
      */
@@ -304,14 +311,15 @@ public final class DateHelper {
     public static LocalDateTime endOfMonth(LocalDateTime dateTime) {
         return startOfMonth(dateTime).plusMonths(1).minusNanos(1);
     }
+    //======================================时间变更 结束===================================
 
 
-    //===========================================================================
+    //========================================类型转换=====================================
 
     /**
      * {@link Date}转{@link LocalDateTime}
      */
-    private static LocalDateTime ofDate(Date date) {
+    public static LocalDateTime ofDate(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -393,4 +401,5 @@ public final class DateHelper {
     public static LocalDate dateToLocalDate(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
+    //======================================类型转换 结束===================================
 }

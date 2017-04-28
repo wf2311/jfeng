@@ -7,6 +7,7 @@ package com.wf2311.jfeng.time;
  * </strong>
  *
  * @author wf2311
+ * @date 2016/04/21 13:57.
  */
 public enum DateStyle {
 
@@ -144,5 +145,9 @@ public enum DateStyle {
 
     public Type type() {
         return type;
+    }
+
+    public enum Type {
+        DATETIME, DATE, TIME, YEAR_MONTH, MONTH_DAY
     }
 }
