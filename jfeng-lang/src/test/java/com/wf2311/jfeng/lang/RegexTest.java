@@ -1,7 +1,6 @@
 package com.wf2311.jfeng.lang;
 
 import com.wf2311.jfeng.time.DateStyle;
-import com.wf2311.jfeng.time.TimeConsts;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import strman.Strman;
@@ -10,7 +9,6 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static com.wf2311.jfeng.time.DateStyle.Regex;
 
 /**
  * @author wangfeng
@@ -46,7 +44,7 @@ public class RegexTest extends TestCase {
 
     public void test4() {
         Arrays.stream(DateStyle.values()).forEach(style -> {
-            String append = Strman.append(style.toString(), "(\"", style.value(), "\",", "Type." + style.type(), ",", style.showOnly() + "", ",\"", style._regex().replace("\\", "\\\\"), "\"),");
+            String append = Strman.append(style.toString(), "(\"", style.value(), "\",", "Type." + style.type(), ",", style.showOnly() + "", ",\"", style.regex().replace("\\", "\\\\"), "\"),");
             System.out.println(append);
             System.out.println();
         });
