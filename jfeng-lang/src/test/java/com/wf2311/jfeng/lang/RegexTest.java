@@ -64,4 +64,11 @@ public class RegexTest extends TestCase {
             System.out.println(i + "\t" + matches);
         });
     }
+
+    public void test11() {
+        String regex = DateStyle.YYYYMMDD.regex();
+        boolean matches = "20151112".matches(regex);
+        System.out.println(regex);
+        System.out.println(matches);
+    }
 }

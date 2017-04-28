@@ -80,26 +80,30 @@ public final class DateHelper {
     /**
      * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
      *
-     * @see DateHelper#style1(String)
-     * @see DateHelper#style2(String)
+     * @see DateHelper#styleWithPattern(String)
+     * @see DateHelper#styleWithTypeAndPattern(String)
+     * @see DateHelper#styleWithRegex(String)
+     * @see DateHelper#styleWithStrictRegex(String)
      * <strong>
-     * 方法{@link DateHelper#style2(String)}在高并发情况下，效率4~5倍于方法{@link DateHelper#style2(String)},目前采用此方法进行格式匹配
+     * 采用{@link DateHelper#styleWithStrictRegex(String)}进行格式匹配
      * </strong>
      */
     public static DateStyle style(String text) {
-        return style1(text);
+        return styleWithStrictRegex(text);
     }
 
     /**
-     * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * 通过日期格式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * <strong>
+     * 此方法转换效率高，但对于一些特定格式无法准确匹配
+     * </strong>
      */
-    public static DateStyle style1(String text) {
+    public static DateStyle styleWithPattern(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
         return Arrays.stream(DateStyle.values())
                 .filter(style -> {
-//                    if (style.showOnly() || !style.equals(DateStyle.YYYY_MM) || !style.equals(DateStyle.MM_DD)) {
                     if (style.showOnly()) {
                         return false;
                     }
@@ -117,9 +121,14 @@ public final class DateHelper {
     }
 
     /**
-     * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * 通过日期类型和格式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * <strong>
+     * 此方法转换时间要5倍于其他方法
+     * </strong>
+     *
+     * @see DateStyle.Type
      */
-    public static DateStyle style2(String text) {
+    public static DateStyle styleWithTypeAndPattern(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
@@ -147,12 +156,48 @@ public final class DateHelper {
         return null;
     }
 
-    public static DateStyle style3(String text) {
+    /**
+     * 通过正则表达式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * <strong>
+     * 只对时间单位的长度限制进行匹配，不检验取值范围有效性。例如：
+     * <pre>
+     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-04-39"))==true;
+     * </pre>
+     * </strong>
+     *
+     * @see DateStyle#regex()
+     * @see DateStyle.Regex
+     */
+    public static DateStyle styleWithRegex(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
         return Arrays.stream(DateStyle.values())
+                .parallel()
                 .filter(style -> !style.showOnly() && text.matches(style.regex()))
+                .findAny().orElse(null);
+    }
+
+    /**
+     * 通过严格的正则表达式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     * <strong>
+     * 此方法同时对时间单位的长度限制和取值范围进行匹配。例如：
+     * <pre>
+     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-04-39"))==false;
+     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-4-19"))==true;
+     * </pre>
+     * </strong>
+     *
+     * @see DateStyle#strictRegex()
+     * @see DateStyle.StrictRegex
+     */
+    public static DateStyle styleWithStrictRegex(String text) {
+        if (text == null || "".equals(text.trim())) {
+            return null;
+        }
+        return Arrays.stream(DateStyle.values())
+                .parallel()
+                .filter(style -> !style.showOnly() && text.matches(style.regex()) && text.matches(style.strictRegex()))
                 .findAny().orElse(null);
     }
 

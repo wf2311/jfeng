@@ -41,24 +41,32 @@ public class DateHelperTest extends TestCase {
     }
 
     public void test_style3() throws Exception {
-        IntStream.range(0, 100000).parallel().forEach(
+        IntStream.range(0, 10000).parallel().forEach(
                 i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style(value))));
     }
 
     public void test_style4() throws Exception {
-        IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style2(value))));
+        IntStream.range(0, 10000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithTypeAndPattern(value))));
     }
 
     public void test_style5() throws Exception {
-        IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style3(value))));
+        IntStream.range(0, 10000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithRegex(value))));
     }
 
-    public void test_style6() {
-        TimeConsts.map.get(DateStyle.CN2_MM_DD).matches(DateStyle.CN2_MM_DD.regex());
+    public void test_style51() throws Exception {
+        IntStream.range(0, 1).forEach(
+                i -> TimeConsts.map.forEach((key, value) -> {
+                    DateStyle style = DateHelper.styleWithRegex(value);
+                    System.out.println(key.equals(style)+"\t"+key+"\t"+value+"\t"+ style);
+                }));
     }
 
+    public void test_style6() throws Exception {
+        IntStream.range(0, 10000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithStrictRegex(value))));
+    }
 
     public void testDateToLocalDate() throws Exception {
         LocalDate result = DateHelper.dateToLocalDate(new GregorianCalendar(2017, Calendar.APRIL, 21, 15, 28).getTime());

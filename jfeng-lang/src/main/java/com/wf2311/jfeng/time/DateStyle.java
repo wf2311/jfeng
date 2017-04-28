@@ -28,15 +28,15 @@ public enum DateStyle {
 
     YYYY_MM_DD_HH("yyyy-MM-dd HH", Type.DATETIME, false),
 
-    YYYYMM("yyyyMM", Type.YEAR_MONTH, false),
+    YYYYMM("yyyyMM", Type.YEAR_MONTH, false, true),
 
-    YYYYMMDD("yyyyMMdd", Type.DATE, false),
+    YYYYMMDD("yyyyMMdd", Type.DATE, false, true),
 
-    YYYYMMDDHH("yyyyMMddHH", Type.DATETIME, false),
+    YYYYMMDDHH("yyyyMMddHH", Type.DATETIME, false, true),
 
-    YYYYMMDDHHMM("yyyyMMddHHmm", Type.DATETIME, false),
+    YYYYMMDDHHMM("yyyyMMddHHmm", Type.DATETIME, false, true),
 
-    YYYYMMDDHHMMSS("yyyyMMddHHmmss", Type.DATETIME, false),
+    YYYYMMDDHHMMSS("yyyyMMddHHmmss", Type.DATETIME, false, true),
 
     SLASH_YYYY_MM("yyyy/MM", Type.YEAR_MONTH, false),
 
@@ -130,21 +130,70 @@ public enum DateStyle {
 
     CN2_3_MM_DD_HH_MM_SS("MM月dd号 HH时mm分ss秒", Type.DATETIME, true),;
 
+    /**
+     * 格式
+     */
     private final String value;
 
-    private final boolean showOnly;
+    /**
+     * 是否只用于转换格式化
+     */
+    private final boolean formatOnly;
 
+    /**
+     * 日期类别
+     */
     private final Type type;
 
+    /**
+     * 匹配规则
+     * <p>
+     * 只对时间单位的长度限制进行匹配，不检验取值范围有效性。例如
+     * 2017-04-01可以匹配{@link DateStyle#YYYYMMDD}
+     * 2017-04-41也可以匹配{@link DateStyle#YYYYMMDD}
+     * </p>
+     */
     private final String regex;
 
+    /**
+     * 严格的匹配规则
+     * <p>
+     * 同时对时间单位的长度限制和取值范围进行匹配。例如
+     * 2017-04-01可以匹配{@link DateStyle#YYYYMMDD}
+     * 2017-04-41无法匹配{@link DateStyle#YYYYMMDD}
+     * </p>
+     */
     private final String strictRegex;
 
-    DateStyle(String value, Type type, boolean showOnly) {
+    /**
+     * 长度是否严格
+     * <p>
+     * 此参数用于时间单元没有分隔符的匹配，例如：
+     * {@link DateStyle#YYYYMMDD}的<code>strictRegex=true</code>,其值的长度必须为8，20170401匹配成功，而201741无法匹配；
+     * {@link DateStyle#YYYY_MM_DD}的<code>strictRegex=false</code>,其值的长度不固定，2017-04-01匹配成功，2017-4-1也可以匹配成功；
+     * </p>
+     */
+    private final boolean strictLength;
+
+    DateStyle(String value, Type type, boolean formatOnly) {
         this.value = value;
-        this.showOnly = showOnly;
+        this.formatOnly = formatOnly;
         this.type = type;
         this.regex = _regex1();
+        this.strictRegex = _regex2();
+        this.strictLength = false;
+    }
+
+    DateStyle(String value, Type type, boolean formatOnly, boolean strictLength) {
+        this.value = value;
+        this.formatOnly = formatOnly;
+        this.type = type;
+        this.strictLength = strictLength;
+        if (strictLength) {
+            this.regex = regexNum(value.length());
+        } else {
+            this.regex = _regex1();
+        }
         this.strictRegex = _regex2();
     }
 
@@ -153,7 +202,7 @@ public enum DateStyle {
     }
 
     public final boolean showOnly() {
-        return showOnly;
+        return formatOnly;
     }
 
     public final Type type() {
@@ -164,43 +213,98 @@ public enum DateStyle {
         return regex;
     }
 
+    public boolean strict() {
+        return strictLength;
+    }
+
     public final String strictRegex() {
         return strictRegex;
     }
 
     public String _regex1() {
-        String r = value.replace("yyyy", YEAR)
-                .replace("MM", MONTH)
-                .replace("dd", DAY)
-                .replace("HH", HOUR)
-                .replace("mm", MINUTE)
-                .replace("ss", SECOND);
-        return "^(" + r + ")$";
+        String r = value.replace("yyyy", Regex.YEAR.value)
+                .replace("MM", Regex.MONTH.value)
+                .replace("dd", Regex.DAY.value)
+                .replace("HH", Regex.HOUR.value)
+                .replace("mm", Regex.MINUTE.value)
+                .replace("ss", Regex.SECOND.value);
+//        return "^(" + r + ")$";
+        return r;
     }
 
     public String _regex2() {
-        String r = value.replace("yyyy", STRICT_YEAR)
-                .replace("MM", STRICT_MONTH)
-                .replace("dd", STRICT_DAY)
-                .replace("HH", STRICT_HOUR)
-                .replace("mm", STRICT_MINUTE)
-                .replace("ss", STRICT_SECOND);
+        String r = value.replace("yyyy", StrictRegex.YEAR.value)
+                .replace("MM", StrictRegex.MONTH.value)
+                .replace("dd", StrictRegex.DAY.value)
+                .replace("HH", StrictRegex.HOUR.value)
+                .replace("mm", StrictRegex.MINUTE.value)
+                .replace("ss", StrictRegex.SECOND.value);
         return "^(" + r + ")$";
     }
 
-    private static final String YEAR = "(\\d{4})";
-    private static final String MONTH = "(\\d{1,2})";
-    private static final String DAY = "(\\d{1,2})";
-    private static final String HOUR = "(\\d{1,2})";
-    private static final String MINUTE = "(\\d{1,2})";
-    private static final String SECOND = MINUTE;
+    private static String regexNum(int size) {
+        return "^(\\d{" + size + "})$";
+    }
 
-    private static final String STRICT_YEAR = "(\\d{4})";
-    private static final String STRICT_MONTH = "(0?[1-9]|1[012])";
-    private static final String STRICT_DAY = "(0?[1-9]|[12][0-9]|3[01])";
-    private static final String STRICT_HOUR = "([0-9]|[01][0-9]|2[0-4])";
-    private static final String STRICT_MINUTE = "([0-9]|[0-5][0-9])";
-    private static final String STRICT_SECOND = STRICT_MINUTE;
+    /**
+     * 时间单元匹配规则
+     * <p>
+     * 年：4位数字
+     * 月：1~2位数字
+     * 日：1~2位数字
+     * 时：1~2位数字
+     * 分：1~2位数字
+     * 秒：1~2位数字
+     * </p>
+     */
+    public enum Regex {
+        YEAR("(\\d{4})"),
+        MONTH("(\\d{1,2})"),
+        DAY("(\\d{1,2})"),
+        HOUR("(\\d{1,2})"),
+        MINUTE("(\\d{1,2})"),
+        SECOND("(\\d{1,2})");
+
+        private final String value;
+
+        Regex(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
+    /**
+     * 严格的时间单元匹配规则
+     * <p>
+     * 年：4位数字
+     * 月：1~2位数字,取值1~12
+     * 日：1~2位数字,取值1~31
+     * 时：1~2位数字,取值0~24
+     * 分：1~2位数字,取值0~59
+     * 秒：1~2位数字,取值0~59
+     * </p>
+     */
+    public enum StrictRegex {
+        YEAR("(\\d{4})"),
+        MONTH("(0?[1-9]|1[012])"),
+        DAY("(0?[1-9]|[12][0-9]|3[01])"),
+        HOUR("([0-9]|[01][0-9]|2[0-4])"),
+        MINUTE("([0-9]|[0-5][0-9])"),
+        SECOND("([0-9]|[0-5][0-9])");
+
+        private final String value;
+
+        StrictRegex(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
 
     public enum Type {
         DATETIME(LocalDateTime.class),
