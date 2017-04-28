@@ -130,29 +130,77 @@ public enum DateStyle {
 
     CN2_3_MM_DD_HH_MM_SS("MM月dd号 HH时mm分ss秒", Type.DATETIME, true),;
 
-    private String value;
+    private final String value;
 
-    private boolean showOnly;
+    private final boolean showOnly;
 
-    private Type type;
+    private final Type type;
 
-    DateStyle(String value, Type type, boolean isShowOnly) {
+    private final String regex;
+
+    private final String strictRegex;
+
+    DateStyle(String value, Type type, boolean showOnly) {
         this.value = value;
-        this.showOnly = isShowOnly;
+        this.showOnly = showOnly;
         this.type = type;
+        this.regex = _regex1();
+        this.strictRegex = _regex2();
     }
 
-    public String value() {
+    public final String value() {
         return value;
     }
 
-    public boolean showOnly() {
+    public final boolean showOnly() {
         return showOnly;
     }
 
-    public Type type() {
+    public final Type type() {
         return type;
     }
+
+    public final String regex() {
+        return regex;
+    }
+
+    public final String strictRegex() {
+        return strictRegex;
+    }
+
+    public String _regex1() {
+        String r = value.replace("yyyy", YEAR)
+                .replace("MM", MONTH)
+                .replace("dd", DAY)
+                .replace("HH", HOUR)
+                .replace("mm", MINUTE)
+                .replace("ss", SECOND);
+        return "^(" + r + ")$";
+    }
+
+    public String _regex2() {
+        String r = value.replace("yyyy", STRICT_YEAR)
+                .replace("MM", STRICT_MONTH)
+                .replace("dd", STRICT_DAY)
+                .replace("HH", STRICT_HOUR)
+                .replace("mm", STRICT_MINUTE)
+                .replace("ss", STRICT_SECOND);
+        return "^(" + r + ")$";
+    }
+
+    private static final String YEAR = "(\\d{4})";
+    private static final String MONTH = "(\\d{1,2})";
+    private static final String DAY = "(\\d{1,2})";
+    private static final String HOUR = "(\\d{1,2})";
+    private static final String MINUTE = "(\\d{1,2})";
+    private static final String SECOND = MINUTE;
+
+    private static final String STRICT_YEAR = "(\\d{4})";
+    private static final String STRICT_MONTH = "(0?[1-9]|1[012])";
+    private static final String STRICT_DAY = "(0?[1-9]|[12][0-9]|3[01])";
+    private static final String STRICT_HOUR = "([0-9]|[01][0-9]|2[0-4])";
+    private static final String STRICT_MINUTE = "([0-9]|[0-5][0-9])";
+    private static final String STRICT_SECOND = STRICT_MINUTE;
 
     public enum Type {
         DATETIME(LocalDateTime.class),

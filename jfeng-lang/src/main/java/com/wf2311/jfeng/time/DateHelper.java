@@ -73,7 +73,6 @@ public final class DateHelper {
             }
         }
         dateFormat.applyPattern(pattern);
-        dateFormat.setLenient(true);
         return dateFormat;
     }
 
@@ -146,6 +145,15 @@ public final class DateHelper {
             return style;
         }
         return null;
+    }
+
+    public static DateStyle style3(String text) {
+        if (text == null || "".equals(text.trim())) {
+            return null;
+        }
+        return Arrays.stream(DateStyle.values())
+                .filter(style -> !style.showOnly() && text.matches(style.regex()))
+                .findAny().orElse(null);
     }
 
     private static DateStyle _style0(Type type, Predicate<DateStyle> predicate) {

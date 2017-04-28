@@ -31,7 +31,7 @@ public class DateHelperTest extends TestCase {
         Assert.assertEquals(DateStyle.MM_DD, DateHelper.style("10-11"));
     }
 
-    public void test_style11(){
+    public void test_style11() {
         Assert.assertEquals(DateStyle.MM_DD, DateHelper.style("10-11"));
     }
 
@@ -47,7 +47,16 @@ public class DateHelperTest extends TestCase {
 
     public void test_style4() throws Exception {
         IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style1(value))));
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style2(value))));
+    }
+
+    public void test_style5() throws Exception {
+        IntStream.range(0, 100000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.style3(value))));
+    }
+
+    public void test_style6() {
+        TimeConsts.map.get(DateStyle.CN2_MM_DD).matches(DateStyle.CN2_MM_DD.regex());
     }
 
 
