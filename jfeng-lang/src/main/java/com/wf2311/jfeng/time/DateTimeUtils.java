@@ -25,10 +25,10 @@ public final class DateTimeUtils {
      */
     private static final DateTimeFormatter DEFAULT_FORMATTER = formatter(DEFAULT_FORMATTER_STYLE);
 
+    private final static Map<Object, Type> support = new HashMap<>();
+
     private DateTimeUtils() {
     }
-
-    private final static Map<Object, Type> support = new HashMap<>();
 
     static {
         support.put(LocalDate.class, Type.DATE);
@@ -49,7 +49,7 @@ public final class DateTimeUtils {
     }
 
 
-    private static Type type(Object support){
+    private static Type type(Object support) {
         Type type = DateTimeUtils.support.get(support);
         if (type == null) {
             throw new IllegalArgumentException("不支持的转换类型：" + support);
@@ -137,26 +137,79 @@ public final class DateTimeUtils {
     }
 
     /**
-     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T>  取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateTimeUtils#support}
      * @throws IllegalArgumentException
      */
-    public static <T> T parse(String text, T t) {
-        FormatterStyle style=style(text);
-        if (style==null){
+    public static <T> LocalDateTime parse(String text, T t) {
+        FormatterStyle style = style(text);
+        return parse(text, style, t);
+    }
+
+    /**
+     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     *
+     * @param <T> 取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> LocalDateTime parse(String text, FormatterStyle style, T t) {
+        return parse(text, style.value(), t);
+    }
+
+    /**
+     * 将时间字符串转化为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     *
+     * @param <T> 取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> LocalDateTime parse(String text, String pattern, T t) {
+        Type type = type(t);
+        try {
+            switch (type) {
+                case DATE:
+                    LocalDate localDate = LocalDate.parse(text, formatter(pattern));
+                    return ofLocalDate(localDate);
+                case DATETIME:
+                    return LocalDateTime.parse(text, formatter(pattern));
+                case TIME:
+                    LocalTime localTime = LocalTime.parse(text, formatter(pattern));
+                    return ofLocalTime(localTime);
+                case MONTH_DAY:
+                    MonthDay monthDay = MonthDay.parse(text, formatter(pattern));
+                    return ofMonthDay(monthDay);
+                case YEAR_MONTH:
+                    YearMonth yearMonth = YearMonth.parse(text, formatter(pattern));
+                    return ofYearMonth(yearMonth);
+                default:
+                    return null;
+            }
+        } catch (Exception ignore) {
             return null;
         }
-        return parse(text, style, t);
     }
 
     /**
      * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T>  取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateTimeUtils#support}
      * @throws IllegalArgumentException
      */
-    public static <T> T parse(String text, String pattern, T t) {
+    public static <T> T parseToObject(String text, T t) {
+        FormatterStyle style = style(text);
+        if (style == null) {
+            return null;
+        }
+        return parseToObject(text, style, t);
+    }
+
+    /**
+     * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
+     *
+     * @param <T> 取值{@link DateTimeUtils#support}
+     * @throws IllegalArgumentException
+     */
+    public static <T> T parseToObject(String text, String pattern, T t) {
         Type type = type(t);
         try {
             switch (type) {
@@ -173,7 +226,7 @@ public final class DateTimeUtils {
                 default:
                     return null;
             }
-        }catch (Exception ignore){
+        } catch (Exception ignore) {
             return null;
         }
     }
@@ -181,11 +234,11 @@ public final class DateTimeUtils {
     /**
      * 将时间字符串转化为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T>  取值{@link DateTimeUtils#support}
+     * @param <T> 取值{@link DateTimeUtils#support}
      * @throws IllegalArgumentException
      */
-    public static <T> T parse(String text, FormatterStyle style, T t) {
-        return parse(text, style.value(), t);
+    public static <T> T parseToObject(String text, FormatterStyle style, T t) {
+        return parseToObject(text, style.value(), t);
     }
 
     /**
@@ -252,8 +305,80 @@ public final class DateTimeUtils {
     /**
      * {@link Date}转{@link LocalDateTime}
      */
-    private static LocalDateTime dateToLocalDateTime(Date date) {
+    private static LocalDateTime ofDate(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+
+    /**
+     * {@link LocalDateTime}转{@link Date}
+     */
+    public static Date toDate(LocalDateTime dateTime) {
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * {@link LocalDate}转{@link LocalDateTime}
+     *
+     * @return 当天的开始时刻
+     */
+    public static LocalDateTime ofLocalDate(LocalDate date) {
+        return LocalDateTime.of(date, LocalTime.MIN);
+    }
+
+    /**
+     * {@link LocalDateTime}转{@link LocalDate}
+     */
+    public static LocalDate toLocalDate(LocalDateTime dateTime) {
+        return dateTime.toLocalDate();
+    }
+
+    /**
+     * {@link YearMonth}转{@link LocalDateTime}
+     *
+     * @return 所在月开始时刻
+     */
+    public static LocalDateTime ofYearMonth(YearMonth yearMonth) {
+        return LocalDateTime.of(yearMonth.atDay(1), LocalTime.MIN);
+    }
+
+    /**
+     * {@link LocalDateTime}转{@link YearMonth}
+     */
+    public static YearMonth toYearMonth(LocalDateTime dateTime) {
+        return YearMonth.of(dateTime.getYear(), dateTime.getMonth());
+    }
+
+    /**
+     * {@link MonthDay}转{@link LocalDateTime}
+     *
+     * @return 当前年所在月日的开始时刻
+     */
+    public static LocalDateTime ofMonthDay(MonthDay monthDay) {
+        return LocalDateTime.of(monthDay.atYear(LocalDateTime.now().getYear()), LocalTime.MIN);
+    }
+
+    /**
+     * {@link LocalDateTime}转{@link MonthDay}
+     */
+    public static MonthDay toMonthDay(LocalDateTime dateTime) {
+        return MonthDay.of(dateTime.getMonth(), dateTime.getDayOfMonth());
+    }
+
+    /**
+     * {@link YearMonth}转{@link LocalDateTime}
+     *
+     * @return 当天的所在时刻
+     */
+    public static LocalDateTime ofLocalTime(LocalTime time) {
+        return LocalDateTime.of(LocalDate.now(), time);
+    }
+
+    /**
+     * {@link LocalDateTime}转{@link LocalTime}
+     */
+    public static LocalTime toLocalTime(LocalDateTime dateTime) {
+        return dateTime.toLocalTime();
     }
 
     /**
@@ -261,12 +386,5 @@ public final class DateTimeUtils {
      */
     public static LocalDate dateToLocalDate(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    /**
-     * {@link LocalDateTime}转{@link Date}
-     */
-    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

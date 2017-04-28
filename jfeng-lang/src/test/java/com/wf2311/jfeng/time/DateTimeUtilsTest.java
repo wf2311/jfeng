@@ -2,7 +2,6 @@ package com.wf2311.jfeng.time;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.time.*;
 import java.time.Month;
@@ -51,7 +50,7 @@ public class DateTimeUtilsTest extends TestCase {
     }
 
     public void testLocalDateTimeToDate() throws Exception {
-        Date result = DateTimeUtils.localDateTimeToDate(LocalDateTime.of(2017, Month.APRIL, 21, 15, 28, 24));
+        Date result = DateTimeUtils.toDate(LocalDateTime.of(2017, Month.APRIL, 21, 15, 28, 24));
         Assert.assertEquals(new GregorianCalendar(2017, Calendar.APRIL, 21, 15, 28).getTime(), result);
     }
 
@@ -156,37 +155,37 @@ public class DateTimeUtilsTest extends TestCase {
 
 
     public void test_parse4(){
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD),LocalDate.class));
-        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD),LocalDate.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYY_MM),YearMonth.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH),LocalDateTime.class));
-        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMM),YearMonth.class));
-        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMMDD),LocalDate.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMMDDHH),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMMSS),LocalDateTime.class));
-        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD),LocalDate.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD),LocalDate.class));
+        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD),LocalDate.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYY_MM),YearMonth.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYY_MM_DD_HH),LocalDateTime.class));
+        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMM),YearMonth.class));
+        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMMDD),LocalDate.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMMDDHH),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMMSS),LocalDateTime.class));
+        Assert.assertEquals(LocalDate.of(2017, 4,21),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD),LocalDate.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,0,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.SLASH_YYYY_MM_DD_HH_MM),LocalDateTime.class));
 
-        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMM),YearMonth.class));
-//        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_3_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_3_YYYY_MM_DD_HH_MM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMM),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN_3_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
-        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parse(TimeConsts.map.get(FormatterStyle.CN2_3_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(YearMonth.of(2017, 4),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMM),YearMonth.class));
+//        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_3_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_3_YYYY_MM_DD_HH_MM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,0),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.YYYYMMDDHHMM),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN_3_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_2_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
+        Assert.assertEquals(LocalDateTime.of(2017, 4,21,13,27,59),DateTimeUtils.parseToObject(TimeConsts.map.get(FormatterStyle.CN2_3_YYYY_MM_DD_HH_MM_SS),LocalDateTime.class));
     }
 
     public void test21(){
