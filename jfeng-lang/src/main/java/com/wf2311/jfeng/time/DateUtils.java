@@ -69,7 +69,7 @@ public final class DateUtils implements Consts {
      */
     private static String addInteger(String date, int dateType, int amount) {
         String dateString = null;
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         if (dateStyle != null) {
             Date myDate = parseToDate(date, dateStyle);
             myDate = addInteger(myDate, dateType, amount);
@@ -107,7 +107,7 @@ public final class DateUtils implements Consts {
      */
     private static String setInteger(String date, int dateType, int amount) {
         String dateString = null;
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         if (dateStyle != null) {
             Date myDate = parseToDate(date, dateStyle);
             myDate = setInteger(myDate, dateType, amount);
@@ -198,7 +198,7 @@ public final class DateUtils implements Consts {
     public static boolean isDate(String date) {
         boolean isDate = false;
         if (date != null) {
-            if (getStyle(date) != null) {
+            if (style(date) != null) {
                 isDate = true;
             }
         }
@@ -211,7 +211,7 @@ public final class DateUtils implements Consts {
      * @param date 日期字符串
      * @return 日期风格
      */
-    public static DateStyle getStyle(String date) {
+    public static DateStyle style(String date) {
         for (DateStyle style : DateStyle.values()) {
             if (style.showOnly()) {
                 continue;
@@ -234,11 +234,11 @@ public final class DateUtils implements Consts {
     /**
      * 取得日期字符串的日期风格。失败返回null。
      *
-     * @param date 日期字符串
+     * @param text 日期字符串
      * @return 日期风格
      */
     @Deprecated
-    public static DateStyle getDateStyle1(String date) {
+    public static DateStyle style1(String text) {
         DateStyle dateStyle = null;
         Map<Long, DateStyle> map = new HashMap<>();
         List<Long> timestamps = new ArrayList<>();
@@ -247,11 +247,11 @@ public final class DateUtils implements Consts {
                 continue;
             }
             Date dateTmp = null;
-            if (date != null) {
+            if (text != null) {
                 try {
                     ParsePosition pos = new ParsePosition(0);
-                    dateTmp = getDateFormat(style.value()).parse(date, pos);
-                    if (pos.getIndex() != date.length()) {
+                    dateTmp = getDateFormat(style.value()).parse(text, pos);
+                    if (pos.getIndex() != text.length()) {
                         dateTmp = null;
                     }
                 } catch (Exception ignored) {
@@ -302,7 +302,7 @@ public final class DateUtils implements Consts {
      * @return 日期
      */
     public static Date parseToDate(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToDate(date, dateStyle);
     }
 
@@ -464,7 +464,7 @@ public final class DateUtils implements Consts {
      * @return 新日期字符串
      */
     public static String parseToString(String date, String newPattern) {
-        DateStyle oldDateStyle = getStyle(date);
+        DateStyle oldDateStyle = style(date);
         return parseToString(date, oldDateStyle, newPattern);
     }
 
@@ -476,7 +476,7 @@ public final class DateUtils implements Consts {
      * @return 新日期字符串
      */
     public static String parseToString(String date, DateStyle newDateStyle) {
-        DateStyle oldDateStyle = getStyle(date);
+        DateStyle oldDateStyle = style(date);
         return parseToString(date, oldDateStyle, newDateStyle);
     }
 
@@ -764,7 +764,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getFirstDayOfYear(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getFirstDayOfYear(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -789,7 +789,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfYear(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfYear(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -811,7 +811,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getLastDayOfYear(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getLastDayOfYear(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -836,7 +836,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfYear(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfYear(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -900,7 +900,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getFirstDayOfSeason(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getFirstDayOfSeason(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -921,7 +921,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfSeason(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfSeason(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -943,7 +943,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getLastDayOfSeason(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getLastDayOfSeason(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -964,7 +964,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfSeason(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getEndOfSeason(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1280,7 +1280,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getFirstDayOfMonth(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getFirstDayOfMonth(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1304,7 +1304,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfMonth(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfMonth(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1325,7 +1325,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getLastDayOfMonth(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getLastDayOfMonth(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1359,7 +1359,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfMonth(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getEndOfMonth(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1390,7 +1390,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getOtherDayOfMonth(String date, int dayOfMonth) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getOtherDayOfMonth(parseToDate(date, dateStyle), dayOfMonth), dateStyle);
     }
 
@@ -1413,7 +1413,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getDayOfWeek(String date, Week week) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return DateUtils.parseToString(getDayOfWeek(parseToDate(date, dateStyle), week), dateStyle);
     }
 
@@ -1576,7 +1576,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getMondayOfWeek(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getMondayOfWeek(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1597,7 +1597,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getSundayOfWeek(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getSundayOfWeek(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1618,7 +1618,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfWeek(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfWeek(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1640,7 +1640,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfWeek(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getEndOfWeek(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -1664,7 +1664,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getOtherDayOfWeek(String date, int dayOfWeek) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getOtherDayOfWeek(parseToDate(date, dateStyle), dayOfWeek), dateStyle);
     }
 
@@ -2159,7 +2159,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfDay(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfDay(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -2180,7 +2180,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getStartOfNextDay(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getStartOfNextDay(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -2201,7 +2201,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfDay(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getEndOfDay(parseToDate(date, dateStyle)), dateStyle);
     }
 
@@ -2222,7 +2222,7 @@ public final class DateUtils implements Consts {
      * @return
      */
     public static String getEndOfPrevDay(String date) {
-        DateStyle dateStyle = getStyle(date);
+        DateStyle dateStyle = style(date);
         return parseToString(getEndOfPrevDay(parseToDate(date, dateStyle)), dateStyle);
     }
 

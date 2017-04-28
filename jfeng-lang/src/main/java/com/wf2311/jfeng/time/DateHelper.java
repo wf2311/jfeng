@@ -1,5 +1,7 @@
 package com.wf2311.jfeng.time;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
@@ -54,9 +56,71 @@ public final class DateHelper {
     }
 
     /**
+     * 锁对象
+     */
+    private static final Object lock = new Object();
+
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<>();
+
+
+    private static SimpleDateFormat sdf(String pattern) throws RuntimeException {
+        SimpleDateFormat dateFormat = threadLocal.get();
+        if (dateFormat == null) {
+            synchronized (lock) {
+                dateFormat = new SimpleDateFormat(pattern);
+                dateFormat.setLenient(false);
+                threadLocal.set(dateFormat);
+            }
+        }
+        dateFormat.applyPattern(pattern);
+        dateFormat.setLenient(true);
+        return dateFormat;
+    }
+
+
+    /**
      * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     *
+     * @see DateHelper#style1(String)
+     * @see DateHelper#style2(String)
+     * <strong>
+     * 方法{@link DateHelper#style2(String)}在高并发情况下，效率4~5倍于方法{@link DateHelper#style2(String)},目前采用此方法进行格式匹配
+     * </strong>
      */
     public static DateStyle style(String text) {
+        return style1(text);
+    }
+
+    /**
+     * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     */
+    public static DateStyle style1(String text) {
+        if (text == null || "".equals(text.trim())) {
+            return null;
+        }
+        return Arrays.stream(DateStyle.values())
+                .filter(style -> {
+//                    if (style.showOnly() || !style.equals(DateStyle.YYYY_MM) || !style.equals(DateStyle.MM_DD)) {
+                    if (style.showOnly()) {
+                        return false;
+                    }
+                    try {
+                        ParsePosition pos = new ParsePosition(0);
+                        Date dateTmp = sdf(style.value()).parse(text, pos);
+                        if (dateTmp != null && pos.getIndex() == text.length()) {
+                            return true;
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    return false;
+                })
+                .findAny().orElse(null);
+    }
+
+    /**
+     * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
+     */
+    public static DateStyle style2(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
@@ -86,6 +150,7 @@ public final class DateHelper {
 
     private static DateStyle _style0(Type type, Predicate<DateStyle> predicate) {
         return Arrays.stream(DateStyle.values())
+                .parallel()
                 .filter(style -> {
                     if (style.showOnly() || !type.equals(style.type())) {
                         return false;
@@ -124,7 +189,11 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换或者不是标准的日期时间格式，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换或者不是<strong>预设的日期时间格式</strong>，返回<code>null</code>
+     * <p>
+     * <strong>预设的日期时间格式</strong>是指
+     * {@link DateStyle#type()} == {@link Type#DATETIME}
+     * </p>
      */
     public static LocalDateTime parseStrict(String text) {
         DateStyle style = style(text);
@@ -222,6 +291,7 @@ public final class DateHelper {
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
+    @SuppressWarnings("unchecked")
     public static <T> T parseToObject(String text, String pattern, T t) {
         Type type = type(t);
         try {

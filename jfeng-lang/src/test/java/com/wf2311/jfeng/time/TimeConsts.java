@@ -26,6 +26,8 @@ public class TimeConsts {
         map.put(DateStyle.SLASH_YYYY_MM, "2017/04");
         map.put(DateStyle.SLASH_YYYY_MM_DD_HH, "2017/04/21 13");
         map.put(DateStyle.SLASH_YYYY_MM_DD_HH_MM, "2017/04/21 13:27");
+        map.put(DateStyle.CN_HH_MM_SS, "13时27分59秒");
+        map.put(DateStyle.CN_HH_MM, "13时27分");
         map.put(DateStyle.CN_YYYY_MM, "2017年04月");
         map.put(DateStyle.CN_YYYY_MM_DD, "2017年04月21日");
         map.put(DateStyle.CN2_YYYY_MM_DD, "2017年04月21号");

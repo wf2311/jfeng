@@ -98,6 +98,10 @@ public enum DateStyle {
 
     SLASH_MM_DD_HH_MM_SS("MM/dd HH:mm:ss", Type.DATETIME, true),
 
+    CN_HH_MM_SS("HH时mm分ss秒", Type.TIME, false),
+
+    CN_HH_MM("HH时mm分", Type.TIME, false),
+
     CN_MM_DD("MM月dd日", Type.MONTH_DAY, false),
 
     CN2_MM_DD("MM月dd号", Type.MONTH_DAY, false),
@@ -124,7 +128,7 @@ public enum DateStyle {
 
     CN2_2_MM_DD_HH_MM_SS("MM月dd号 HH点mm分ss秒", Type.DATETIME, true),
 
-    CN2_3_MM_DD_HH_MM_SS("MM月dd号 HH时mm分ss秒", Type.DATETIME, true);
+    CN2_3_MM_DD_HH_MM_SS("MM月dd号 HH时mm分ss秒", Type.DATETIME, true),;
 
     private String value;
 

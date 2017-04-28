@@ -11,7 +11,7 @@
 
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng-lang</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
