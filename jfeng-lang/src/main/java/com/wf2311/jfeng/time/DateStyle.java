@@ -1,5 +1,8 @@
 package com.wf2311.jfeng.time;
 
+import java.time.*;
+import java.util.Arrays;
+
 /**
  * 日期格式
  * <strong>
@@ -7,7 +10,7 @@ package com.wf2311.jfeng.time;
  * </strong>
  *
  * @author wf2311
- * @date 2016/04/20 22:15.
+ * @date 2017/04/20 22:15.
  */
 public enum DateStyle {
 
@@ -148,6 +151,26 @@ public enum DateStyle {
     }
 
     public enum Type {
-        DATETIME, DATE, TIME, YEAR_MONTH, MONTH_DAY
+        DATETIME(LocalDateTime.class),
+        DATE(LocalDate.class),
+        TIME(LocalTime.class),
+        YEAR_MONTH(YearMonth.class),
+        MONTH_DAY(MonthDay.class);
+
+        private Class value;
+
+        Type(Class value) {
+            this.value = value;
+        }
+
+        public Object value() {
+            return value;
+        }
+
+        public static Type find(Object value) {
+            return Arrays.stream(Type.values())
+                    .filter(t -> t.value.equals(value))
+                    .findAny().orElse(null);
+        }
     }
 }

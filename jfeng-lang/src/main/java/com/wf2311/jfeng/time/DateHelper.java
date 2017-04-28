@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * java8 时间工具类
  *
  * @author wf2311
- * @date 2016/04/20 22:12.
+ * @date 2017/04/20 22:12.
  */
 public final class DateHelper {
 
@@ -57,7 +57,7 @@ public final class DateHelper {
 
 
     private static DateStyle.Type type(Object support) {
-        DateStyle.Type type = DateHelper.support.get(support);
+        DateStyle.Type type = DateStyle.Type.find(support);
         if (type == null) {
             throw new IllegalArgumentException("不支持的转换类型：" + support);
         }
@@ -106,8 +106,8 @@ public final class DateHelper {
                     } catch (Exception ignored) {
                     }
                     return false;
-                }).findAny()
-                .orElse(null);
+                })
+                .findAny().orElse(null);
     }
 
     //========================================格式转换=====================================
@@ -135,9 +135,9 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换或者不是标准的日期时间格式，返回<code>null</code>
      */
-    public static LocalDateTime parse(String text) {
+    public static LocalDateTime parseStrict(String text) {
         DateStyle style = style(text);
         if (style == null || !DateStyle.Type.DATETIME.equals(style.type())) {
             return null;
@@ -148,9 +148,24 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
      */
+    public static LocalDateTime parse(String text) {
+        DateStyle style = style(text);
+        if (style == null) {
+            return null;
+        }
+        Object cls = style.type().value();
+        return parse(text, style, cls);
+    }
+
+    /**
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     *
+     * @param <T> 取值{@link DateStyle.Type#value()}
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
     public static <T> LocalDateTime parse(String text, T t) {
         DateStyle style = style(text);
         return parse(text, style, t);
@@ -159,7 +174,7 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
+     * @param <T> 取值{@link DateStyle.Type#value()}
      * @throws IllegalArgumentException
      */
     public static <T> LocalDateTime parse(String text, DateStyle style, T t) {
@@ -169,7 +184,7 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
+     * @param <T> 取值{@link DateStyle.Type#value()}
      * @throws IllegalArgumentException
      */
     public static <T> LocalDateTime parse(String text, String pattern, T t) {
@@ -201,7 +216,7 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
+     * @param <T> 取值{@link DateStyle.Type#value()}
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, T t) {
@@ -215,7 +230,7 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
+     * @param <T> 取值{@link DateStyle.Type#value()}
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, String pattern, T t) {
@@ -243,7 +258,7 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link DateHelper#support}
+     * @param <T> 取值{@link DateStyle.Type#value()}
      * @throws IllegalArgumentException
      */
     public static <T> T parseToObject(String text, DateStyle style, T t) {
