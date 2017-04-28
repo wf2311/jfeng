@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * java8 时间工具类
  *
  * @author wf2311
- * @date 2016/04/21 13:52.
+ * @date 2016/04/20 22:12.
  */
 public final class DateHelper {
 
@@ -113,7 +113,7 @@ public final class DateHelper {
     //========================================格式转换=====================================
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text, String pattern) {
         try {
@@ -124,7 +124,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text, DateStyle style) {
         try {
@@ -135,7 +135,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text) {
         DateStyle style = style(text);
@@ -146,7 +146,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -157,7 +157,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -167,7 +167,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -199,7 +199,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -213,7 +213,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -241,7 +241,7 @@ public final class DateHelper {
     }
 
     /**
-     * 将时间字符串转为指定时间类型。如果无法转换，返回<code>null</code>
+     * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
      * @param <T> 取值{@link DateHelper#support}
      * @throws IllegalArgumentException
@@ -251,21 +251,21 @@ public final class DateHelper {
     }
 
     /**
-     * 将{@link LocalDateTime}格式化为字符串。默认格式{@link #DEFAULT_FORMATTER_STYLE}
+     * 将{@link LocalDateTime}格式化为字符串{@link String}。默认格式{@link #DEFAULT_FORMATTER_STYLE}
      */
     public static String format(LocalDateTime dateTime) {
         return dateTime.format(DEFAULT_FORMATTER);
     }
 
     /**
-     * 将{@link LocalDateTime}格式化为字符串
+     * 将{@link LocalDateTime}格式化为字符串{@link String}
      */
     public static String format(LocalDateTime dateTime, String pattern) {
         return dateTime.format(formatter(pattern));
     }
 
     /**
-     * 将{@link LocalDateTime}格式化为字符串
+     * 将{@link LocalDateTime}格式化为字符串{@link String}
      */
     public static String format(LocalDateTime dateTime, DateStyle style) {
         return dateTime.format(formatter(style));
