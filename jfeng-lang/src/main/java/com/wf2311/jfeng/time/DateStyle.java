@@ -1,7 +1,12 @@
 package com.wf2311.jfeng.time;
 
+import org.antlr.runtime.CharStream;
+
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 日期格式
@@ -152,6 +157,8 @@ public enum DateStyle {
      * 2017-04-01可以匹配{@link DateStyle#YYYYMMDD}
      * 2017-04-41也可以匹配{@link DateStyle#YYYYMMDD}
      * </p>
+     *
+     * @see DateStyle.Regex
      */
     private final String regex;
 
@@ -162,6 +169,8 @@ public enum DateStyle {
      * 2017-04-01可以匹配{@link DateStyle#YYYYMMDD}
      * 2017-04-41无法匹配{@link DateStyle#YYYYMMDD}
      * </p>
+     *
+     * @see DateStyle.StrictRegex
      */
     private final String strictRegex;
 
@@ -175,13 +184,17 @@ public enum DateStyle {
      */
     private final boolean strictLength;
 
+
+    private final List<Part> contains;
+
     DateStyle(String value, Type type, boolean formatOnly) {
         this.value = value;
         this.formatOnly = formatOnly;
         this.type = type;
-        this.regex = _regex1();
-        this.strictRegex = _regex2();
+        this.regex = _regex();
+        this.strictRegex = _strictRegex();
         this.strictLength = false;
+        this.contains = _contains();
     }
 
     DateStyle(String value, Type type, boolean formatOnly, boolean strictLength) {
@@ -192,9 +205,10 @@ public enum DateStyle {
         if (strictLength) {
             this.regex = regexNum(value.length());
         } else {
-            this.regex = _regex1();
+            this.regex = _regex();
         }
-        this.strictRegex = _regex2();
+        this.strictRegex = _strictRegex();
+        this.contains = _contains();
     }
 
     public final String value() {
@@ -213,7 +227,7 @@ public enum DateStyle {
         return regex;
     }
 
-    public boolean strict() {
+    public boolean strictLength() {
         return strictLength;
     }
 
@@ -221,34 +235,62 @@ public enum DateStyle {
         return strictRegex;
     }
 
-    public String _regex1() {
-        String r = value.replace("yyyy", Regex.YEAR.value)
-                .replace("MM", Regex.MONTH.value)
-                .replace("dd", Regex.DAY.value)
-                .replace("HH", Regex.HOUR.value)
-                .replace("mm", Regex.MINUTE.value)
-                .replace("ss", Regex.SECOND.value);
-//        return "^(" + r + ")$";
-        return r;
+    public final List<Part> contains() {
+        return this.contains;
     }
 
-    public String _regex2() {
-        String r = value.replace("yyyy", StrictRegex.YEAR.value)
-                .replace("MM", StrictRegex.MONTH.value)
-                .replace("dd", StrictRegex.DAY.value)
-                .replace("HH", StrictRegex.HOUR.value)
-                .replace("mm", StrictRegex.MINUTE.value)
-                .replace("ss", StrictRegex.SECOND.value);
-        return "^(" + r + ")$";
+    private String _regex() {
+        String r = value
+                .replace(Part.YEAR.value, Regex.YEAR.value)
+                .replace(Part.MONTH.value, Regex.MONTH.value)
+                .replace(Part.DAY.value, Regex.DAY.value)
+                .replace(Part.HOUR.value, Regex.HOUR.value)
+                .replace(Part.MINUTE.value, Regex.MINUTE.value)
+                .replace(Part.SECOND.value, Regex.SECOND.value);
+        return fillRegex(r);
+    }
+
+    private String _strictRegex() {
+        String r = value
+                .replace(Part.YEAR.value, StrictRegex.YEAR.value)
+                .replace(Part.MONTH.value, StrictRegex.MONTH.value)
+                .replace(Part.DAY.value, StrictRegex.DAY.value)
+                .replace(Part.HOUR.value, StrictRegex.HOUR.value)
+                .replace(Part.MINUTE.value, StrictRegex.MINUTE.value)
+                .replace(Part.SECOND.value, StrictRegex.SECOND.value);
+        return fillRegex(r);
+    }
+
+    private List<Part> _contains() {
+        List<Part> list = new ArrayList<>();
+        Arrays.stream(value.split("")).distinct()
+                .forEach(s -> {
+                    Part part = Part.find(s);
+                    if (part != null && !list.contains(part)) {
+                        list.add(part);
+                    }
+                });
+//        for (int i = 0; i < value.length(); i++) {
+//            Part part = Part.find(value.charAt(i));
+//            if (part != null && !list.contains(part)) {
+//                list.add(part);
+//            }
+//        }
+        return list;
     }
 
     private static String regexNum(int size) {
-        return "^(\\d{" + size + "})$";
+        return fillRegex("\\d{" + size + "}");
+    }
+
+    private static String fillRegex(String regex) {
+        return "^" + regex + "$";
     }
 
     /**
      * 时间单元匹配规则
      * <p>
+     * 只对时间单位的长度限制进行匹配，不检验取值范围有效性.
      * 年：4位数字
      * 月：1~2位数字
      * 日：1~2位数字
@@ -279,6 +321,7 @@ public enum DateStyle {
     /**
      * 严格的时间单元匹配规则
      * <p>
+     * 同时对时间单位的长度限制和取值范围进行匹配
      * 年：4位数字
      * 月：1~2位数字,取值1~12
      * 日：1~2位数字,取值1~31
@@ -303,6 +346,31 @@ public enum DateStyle {
 
         public String value() {
             return value;
+        }
+    }
+
+    public enum Part {
+        YEAR("yyyy"),
+        MONTH("MM"),
+        DAY("dd"),
+        HOUR("HH"),
+        MINUTE("mm"),
+        SECOND("ss");
+
+        private final String value;
+
+        Part(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+
+        public static Part find(String value) {
+            return Arrays.stream(Part.values())
+                    .filter(t -> t.value.contains(value))
+                    .findAny().orElse(null);
         }
     }
 

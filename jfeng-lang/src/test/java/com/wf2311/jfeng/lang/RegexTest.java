@@ -1,11 +1,14 @@
 package com.wf2311.jfeng.lang;
 
 import com.wf2311.jfeng.time.DateStyle;
+import com.wf2311.jfeng.time.TimeConsts;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import strman.Strman;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -44,7 +47,7 @@ public class RegexTest extends TestCase {
 
     public void test4() {
         Arrays.stream(DateStyle.values()).forEach(style -> {
-            String append = Strman.append(style.toString(), "(\"", style.value(), "\",", "Type." + style.type(), ",", style.showOnly() + "", ",\"", style.regex().replace("\\", "\\\\"), "\"),");
+            String append = Strman.append(style.toString(), "(\"", style.value(), "\",", "Type." + style.type(), ",", style.showOnly() + "", ",\"", style.strictRegex().replace("\\", "\\\\"), "\"),");
             System.out.println(append);
             System.out.println();
         });
@@ -70,5 +73,30 @@ public class RegexTest extends TestCase {
         boolean matches = "20151112".matches(regex);
         System.out.println(regex);
         System.out.println(matches);
+    }
+
+    public void test12() {
+        TimeConsts.map.forEach((k,v)-> show(k.strictRegex(),v));
+    }
+
+    public void show(String regex, String text) {
+//        System.out.println(regex + "\t" + text);
+        Matcher matcher = Pattern.compile(regex).matcher(text);
+        if (matcher.find()) {
+            for (int i = 0; i <= matcher.groupCount(); i++) {
+                if (i == 0) {
+                    System.out.println(matcher.group(i));
+                } else {
+                    System.out.printf(matcher.group(i) + "\t");
+                }
+            }
+            System.out.println();
+        }
+
+    }
+
+    public void test13(){
+        LocalDateTime now = LocalDateTime.now();
+
     }
 }

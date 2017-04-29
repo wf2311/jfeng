@@ -51,21 +51,21 @@ public class DateHelperTest extends TestCase {
     }
 
     public void test_style5() throws Exception {
-        IntStream.range(0, 10000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithRegex(value))));
+        IntStream.range(0, 100000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithPattern(value))));
     }
 
     public void test_style51() throws Exception {
         IntStream.range(0, 1).forEach(
                 i -> TimeConsts.map.forEach((key, value) -> {
                     DateStyle style = DateHelper.styleWithRegex(value);
-                    System.out.println(key.equals(style)+"\t"+key+"\t"+value+"\t"+ style);
+                    System.out.println(key.equals(style) + "\t" + key + "\t" + value + "\t" + style);
                 }));
     }
 
     public void test_style6() throws Exception {
-        IntStream.range(0, 10000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithStrictRegex(value))));
+        IntStream.range(0, 100000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithRegex(value))));
     }
 
     public void testDateToLocalDate() throws Exception {
@@ -165,6 +165,29 @@ public class DateHelperTest extends TestCase {
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 13, 27, 59), DateHelper.parseToObject(TimeConsts.map.get(DateStyle.CN2_YYYY_MM_DD_HH_MM_SS), LocalDateTime.class));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 13, 27, 59), DateHelper.parseToObject(TimeConsts.map.get(DateStyle.CN2_2_YYYY_MM_DD_HH_MM_SS), LocalDateTime.class));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 13, 27, 59), DateHelper.parseToObject(TimeConsts.map.get(DateStyle.CN2_3_YYYY_MM_DD_HH_MM_SS), LocalDateTime.class));
+    }
+
+    public void test_parseByRegex() {
+        IntStream.range(0, 100000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> {
+                    DateHelper.parseByRegex(value);
+//                    System.out.println(key.value() + "\t" + value + "\t" + DateHelper.parseByRegex(value));
+                }));
+
+    }
+
+    public void test_parseByAuto() {
+        IntStream.range(0, 100000).parallel().forEach(
+                i -> TimeConsts.map.forEach((key, value) -> {
+                    DateHelper.parse(value);
+//                    System.out.println(key.value() + "\t" + value + "\t" + DateHelper.parseByRegex(value));
+                }));
+
+    }
+
+    public void test_parseByRegex2() {
+        LocalDateTime time = DateHelper.parseByRegex(t2);
+        System.out.println(time);
     }
 
 

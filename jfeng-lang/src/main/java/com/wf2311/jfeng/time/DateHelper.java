@@ -5,11 +5,16 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.wf2311.jfeng.time.DateStyle.Type;
+import static com.wf2311.jfeng.time.DateStyle.Part;
 
 /**
  * java8 时间工具类
@@ -173,7 +178,6 @@ public final class DateHelper {
             return null;
         }
         return Arrays.stream(DateStyle.values())
-                .parallel()
                 .filter(style -> !style.showOnly() && text.matches(style.regex()))
                 .findAny().orElse(null);
     }
@@ -196,7 +200,6 @@ public final class DateHelper {
             return null;
         }
         return Arrays.stream(DateStyle.values())
-                .parallel()
                 .filter(style -> !style.showOnly() && text.matches(style.regex()) && text.matches(style.strictRegex()))
                 .findAny().orElse(null);
     }
@@ -396,6 +399,75 @@ public final class DateHelper {
      */
     public static String format(LocalDateTime dateTime, DateStyle style) {
         return dateTime.format(formatter(style));
+    }
+
+    public static LocalDateTime parseByRegex(String text) {
+
+        DateStyle style = style(text);
+        int year = Year.now().getValue();
+        int month = 1;
+        int day = 1;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        int[] timeParts = style.strictLength() ? timePartStrict(text, style) : timePart(text, style);
+        if (timeParts == null || timeParts.length != style.contains().size()) {
+            throw new RuntimeException("转换错误");
+        }
+        for (int i = 0; i < style.contains().size(); i++) {
+            switch (style.contains().get(i)) {
+                case YEAR:
+                    year = timeParts[i];
+                    break;
+                case MONTH:
+                    year = timeParts[i];
+                    break;
+                case DAY:
+                    year = timeParts[i];
+                    break;
+                case HOUR:
+                    year = timeParts[i];
+                    break;
+                case MINUTE:
+                    year = timeParts[i];
+                    break;
+                case SECOND:
+                    year = timeParts[i];
+                    break;
+                default:
+                    break;
+            }
+        }
+        return LocalDateTime.of(year, month, day, hour, minute, second);
+    }
+
+    private static int[] timePart(String text, DateStyle style) {
+        Matcher matcher = Pattern.compile(style.strictRegex()).matcher(text);
+        if (matcher.find()) {
+            int[] part = new int[matcher.groupCount()];
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                part[i] = Integer.valueOf(matcher.group(i + 1));
+            }
+            return part;
+        }
+        return null;
+    }
+
+    private static int[] timePartStrict(String text, DateStyle style) {
+        if (!style.strictLength()) {
+            throw new IllegalArgumentException("非法参数");
+        }
+        int start = 0;
+        int end = 0;
+        List<Integer> list = new ArrayList<>();
+        for (Part part : Part.values()) {
+            if (style.value().contains(part.value())) {
+                end += part.value().length();
+                list.add(Integer.valueOf(text.substring(start, end)));
+                start = end + 1;
+            }
+        }
+        return list.stream().mapToInt(i -> i).toArray();
     }
 
     //======================================格式转换 结束===================================
