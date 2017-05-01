@@ -475,14 +475,14 @@ public final class DateHelper {
     //========================================时间变更=====================================
 
     /**
-     * 所在日期的同年开始时刻
+     * 所在日期的当年开始时刻
      */
     public static LocalDateTime startOfYear(LocalDateTime dateTime) {
         return LocalDateTime.of(LocalDate.of(dateTime.getYear(), 1, 1), LocalTime.MIN);
     }
 
     /**
-     * 所在日期的同年开始时刻
+     * 所在日期的当年开始时刻
      */
     public static String startOfYear(String text) {
         DateStyle style = style(text);
@@ -491,24 +491,79 @@ public final class DateHelper {
 
 
     /**
-     * 所在日期的同年结束时刻
+     * 所在日期的当年结束时刻
      */
     public static LocalDateTime endOfYear(LocalDateTime dateTime) {
         return LocalDateTime.of(LocalDate.of(dateTime.getYear(), 12, 31), LocalTime.MAX);
     }
 
     /**
-     * 所在日期的同月开始时刻
+     * 所在日期的当月开始时刻
      */
     public static LocalDateTime startOfMonth(LocalDateTime dateTime) {
         return LocalDateTime.of(LocalDate.of(dateTime.getYear(), dateTime.getMonth(), 1), LocalTime.MIN);
     }
 
     /**
-     * 所在日期的同月结束时刻
+     * 所在日期的当月结束时刻
      */
     public static LocalDateTime endOfMonth(LocalDateTime dateTime) {
         return startOfMonth(dateTime).plusMonths(1).minusNanos(1);
+    }
+
+    /**
+     * 所在日期的当周开始时刻(星期一)
+     */
+    public static LocalDateTime startOfWeek(LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        return dateTime.minusDays(dayOfWeek.getValue() - 1).toLocalDate().atStartOfDay();
+    }
+
+    /**
+     * 所在日期的当周开始时刻(星期一)
+     */
+    public static LocalDateTime endOfWeek(LocalDateTime dateTime) {
+        return startOfWeek(dateTime).minusNanos(1);
+    }
+
+    /**
+     * 所在日期的当周的第几天
+     */
+    public static LocalDateTime dayOfWeek(LocalDateTime dateTime, int dayOfWeek) {
+        if (dayOfWeek > 7 || dayOfWeek < 1) {
+            new IllegalArgumentException("非法参数！");
+        }
+        return dateTime.plusDays(dayOfWeek - dateTime.getDayOfWeek().getValue());
+    }
+
+    /**
+     * 所在日期的当周的第几天
+     */
+    public static LocalDateTime dayOfWeek(LocalDateTime dateTime, DayOfWeek dayOfWeek) {
+        if (dayOfWeek == null) {
+            new IllegalArgumentException("非法参数！");
+        }
+        return dateTime.plusDays(dayOfWeek.getValue() - dateTime.getDayOfWeek().getValue());
+    }
+
+    /**
+     * 所在日期的当周的第几天
+     */
+    public static LocalDate dayOfWeek(LocalDate date, int dayOfWeek) {
+        if (dayOfWeek > 7 || dayOfWeek < 1) {
+            new IllegalArgumentException("非法参数！");
+        }
+        return date.plusDays(dayOfWeek - date.getDayOfWeek().getValue());
+    }
+
+    /**
+     * 所在日期的当周的第几天
+     */
+    public static LocalDate dayOfWeek(LocalDate date, DayOfWeek dayOfWeek) {
+        if (dayOfWeek == null) {
+            new IllegalArgumentException("非法参数！");
+        }
+        return date.plusDays(dayOfWeek.getValue() - date.getDayOfWeek().getValue());
     }
     //======================================时间变更 结束===================================
 

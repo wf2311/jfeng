@@ -1,12 +1,9 @@
 package com.wf2311.jfeng.time;
 
-import org.antlr.runtime.CharStream;
-
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * 日期格式
@@ -270,12 +267,6 @@ public enum DateStyle {
                         list.add(part);
                     }
                 });
-//        for (int i = 0; i < value.length(); i++) {
-//            Part part = Part.find(value.charAt(i));
-//            if (part != null && !list.contains(part)) {
-//                list.add(part);
-//            }
-//        }
         return list;
     }
 
