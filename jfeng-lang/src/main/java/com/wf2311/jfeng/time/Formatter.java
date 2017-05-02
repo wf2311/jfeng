@@ -23,7 +23,7 @@ public class Formatter {
     /**
      * 日期类别
      */
-    private final Formatter.Type type;
+    private final Type type;
 
     /**
      * 匹配规则
@@ -33,7 +33,7 @@ public class Formatter {
      * 2017-04-41也可以匹配{@link DateStyle#YYYYMMDD}
      * </p>
      *
-     * @see Formatter.Regex
+     * @see Regex
      */
     private final String regex;
 
@@ -45,7 +45,7 @@ public class Formatter {
      * 2017-04-41无法匹配{@link DateStyle#YYYYMMDD}
      * </p>
      *
-     * @see Formatter.StrictRegex
+     * @see StrictRegex
      */
     private final String strictRegex;
 
@@ -209,7 +209,7 @@ public class Formatter {
      * 秒：1~2位数字
      * </p>
      */
-    public enum Regex {
+    protected enum Regex {
         YEAR("(\\d{4})"),
         MONTH("(\\d{1,2})"),
         DAY("(\\d{1,2})"),
@@ -240,7 +240,7 @@ public class Formatter {
      * 秒：1~2位数字,取值0~59
      * </p>
      */
-    public enum StrictRegex {
+    protected enum StrictRegex {
         YEAR("(\\d{4})"),
         MONTH("(0?[1-9]|1[012])"),
         DAY("(0?[1-9]|[12][0-9]|3[01])"),
@@ -259,7 +259,7 @@ public class Formatter {
         }
     }
 
-    public enum Part {
+    protected enum Part {
         YEAR("yyyy"),
         MONTH("MM"),
         DAY("dd"),
@@ -284,7 +284,7 @@ public class Formatter {
         }
     }
 
-    public enum Type {
+    protected enum Type {
         DATETIME(LocalDateTime.class),
         DATE(LocalDate.class),
         TIME(LocalTime.class),
