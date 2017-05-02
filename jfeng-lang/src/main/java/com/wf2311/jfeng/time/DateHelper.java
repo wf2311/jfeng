@@ -11,8 +11,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.wf2311.jfeng.time.DateStyle.Type;
-import static com.wf2311.jfeng.time.DateStyle.Part;
+import static com.wf2311.jfeng.time.Formatter.*;
 
 /**
  * java8 时间工具类
@@ -78,7 +77,7 @@ public final class DateHelper {
      * 此方法转换时间要5倍于其他方法
      * </strong>
      *
-     * @see DateStyle.Type
+     * @see Formatter.Type
      */
     public static DateStyle styleByPattern(String text) {
         if (text == null || "".equals(text.trim())) {
@@ -118,7 +117,7 @@ public final class DateHelper {
      * </strong>
      *
      * @see DateStyle#regex()
-     * @see DateStyle.Regex
+     * @see Formatter.Regex
      */
     public static DateStyle styleByRegex(String text) {
         if (text == null || "".equals(text.trim())) {
@@ -140,7 +139,7 @@ public final class DateHelper {
      * </strong>
      *
      * @see DateStyle#strictRegex()
-     * @see DateStyle.StrictRegex
+     * @see Formatter.StrictRegex
      */
     public static DateStyle styleByStrictRegex(String text) {
         if (text == null || "".equals(text.trim())) {
@@ -245,6 +244,49 @@ public final class DateHelper {
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
+     * @throws IllegalArgumentException
+     */
+    public static LocalDateTime parse(String text, Formatter formatter) {
+        int year = Year.now().getValue();
+        int month = 1;
+        int day = 1;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        int[] timeParts = formatter.lengthStrict() ? timePartStrict(text, formatter) : timePart(text, formatter);
+        if (timeParts == null || timeParts.length != formatter.contains().size()) {
+            throw new RuntimeException("转换错误");
+        }
+        for (int i = 0; i < formatter.contains().size(); i++) {
+            switch (formatter.contains().get(i)) {
+                case YEAR:
+                    year = timeParts[i];
+                    break;
+                case MONTH:
+                    month = timeParts[i];
+                    break;
+                case DAY:
+                    day = timeParts[i];
+                    break;
+                case HOUR:
+                    hour = timeParts[i];
+                    break;
+                case MINUTE:
+                    minute = timeParts[i];
+                    break;
+                case SECOND:
+                    second = timeParts[i];
+                    break;
+                default:
+                    break;
+            }
+        }
+        return LocalDateTime.of(year, month, day, hour, minute, second);
+    }
+
+    /**
+     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
+     *
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
@@ -328,47 +370,12 @@ public final class DateHelper {
     }
 
     public static LocalDateTime parseByRegex(String text) {
-
-        DateStyle style = style(text);
-        int year = Year.now().getValue();
-        int month = 1;
-        int day = 1;
-        int hour = 0;
-        int minute = 0;
-        int second = 0;
-        int[] timeParts = style.lengthStrict() ? timePartStrict(text, style) : timePart(text, style);
-        if (timeParts == null || timeParts.length != style.contains().size()) {
-            throw new RuntimeException("转换错误");
-        }
-        for (int i = 0; i < style.contains().size(); i++) {
-            switch (style.contains().get(i)) {
-                case YEAR:
-                    year = timeParts[i];
-                    break;
-                case MONTH:
-                    month = timeParts[i];
-                    break;
-                case DAY:
-                    day = timeParts[i];
-                    break;
-                case HOUR:
-                    hour = timeParts[i];
-                    break;
-                case MINUTE:
-                    minute = timeParts[i];
-                    break;
-                case SECOND:
-                    second = timeParts[i];
-                    break;
-                default:
-                    break;
-            }
-        }
-        return LocalDateTime.of(year, month, day, hour, minute, second);
+        Formatter formatter = style(text).formatter();
+        return parse(text, formatter);
     }
 
-    private static int[] timePart(String text, DateStyle style) {
-        Matcher matcher = Pattern.compile(style.strictRegex()).matcher(text);
+    private static int[] timePart(String text, Formatter formatter) {
+        Matcher matcher = Pattern.compile(formatter.strictRegex()).matcher(text);
         if (matcher.find()) {
             int[] part = new int[matcher.groupCount()];
             for (int i = 0; i < matcher.groupCount(); i++) {
@@ -379,15 +386,15 @@ public final class DateHelper {
         return null;
     }
 
-    private static int[] timePartStrict(String text, DateStyle style) {
-        if (!style.lengthStrict()) {
+    private static int[] timePartStrict(String text, Formatter formatter) {
+        if (!formatter.lengthStrict()) {
             throw new IllegalArgumentException("非法参数");
         }
         int start = 0;
         int end = 0;
         List<Integer> list = new ArrayList<>();
         for (Part part : Part.values()) {
-            if (style.value().contains(part.value())) {
+            if (formatter.value().contains(part.value())) {
                 end += part.value().length();
                 list.add(Integer.valueOf(text.substring(start, end)));
                 start = end + 1;

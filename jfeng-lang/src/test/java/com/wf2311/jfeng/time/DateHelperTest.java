@@ -1,7 +1,5 @@
 package com.wf2311.jfeng.time;
 
-import com.alibaba.fastjson.JSON;
-import com.wf2311.jfeng.exception.WfException;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
@@ -9,7 +7,10 @@ import java.time.*;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 /**
@@ -25,7 +26,7 @@ public class DateHelperTest extends TestCase {
         Assert.assertEquals(DateStyle.SLASH_YYYY_MM_DD_HH_MM_SS, DateHelper.style("2017/04/27 21:29:32"));
         Assert.assertEquals(DateStyle.YYYY_MM, DateHelper.style("2017-04"));
         Assert.assertEquals(DateStyle.YYYY_MM_DD_HH_MM, DateHelper.style("2017-04-27 21:29"));
-        Assert.assertEquals(DateStyle .YYYY_MM_DD_HH, DateHelper.style("2017-04-27 21"));
+        Assert.assertEquals(DateStyle.YYYY_MM_DD_HH, DateHelper.style("2017-04-27 21"));
         Assert.assertEquals(DateStyle.YYYYMM, DateHelper.style("201704"));
         Assert.assertEquals(DateStyle.YYYYMMDD, DateHelper.style("20170427"));
         Assert.assertEquals(DateStyle.YYYYMMDDHH, DateHelper.style("2017042721"));
@@ -171,6 +172,13 @@ public class DateHelperTest extends TestCase {
 //                    System.out.println(key.value() + "\t" + value + "\t" + DateHelper.parseByRegex(value));
                 }));
 
+    }
+
+    public void test_parse_format() {
+        String date = "2/5/2017 14点:6分";
+        Formatter formatter = new Formatter("dd/MM/yyyy HH点:mm分");
+        LocalDateTime parse = DateHelper.parse(date, formatter);
+        System.out.println(parse);
     }
 
     public void test_parseByAuto() {
