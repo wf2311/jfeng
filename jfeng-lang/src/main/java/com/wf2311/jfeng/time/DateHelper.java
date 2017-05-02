@@ -1,7 +1,5 @@
 package com.wf2311.jfeng.time;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
@@ -61,68 +59,17 @@ public final class DateHelper {
     }
 
     /**
-     * 锁对象
-     */
-    private static final Object lock = new Object();
-
-    private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<>();
-
-
-    private static SimpleDateFormat sdf(String pattern) throws RuntimeException {
-        SimpleDateFormat dateFormat = threadLocal.get();
-        if (dateFormat == null) {
-            synchronized (lock) {
-                dateFormat = new SimpleDateFormat(pattern);
-                dateFormat.setLenient(false);
-                threadLocal.set(dateFormat);
-            }
-        }
-        dateFormat.applyPattern(pattern);
-        return dateFormat;
-    }
-
-
-    /**
      * 从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
      *
-     * @see DateHelper#styleWithPattern(String)
-     * @see DateHelper#styleWithTypeAndPattern(String)
-     * @see DateHelper#styleWithRegex(String)
-     * @see DateHelper#styleWithStrictRegex(String)
+     * @see DateHelper#styleByPattern(String)
+     * @see DateHelper#styleByRegex(String)
+     * @see DateHelper#styleByStrictRegex(String)
      * <strong>
-     * 采用{@link DateHelper#styleWithStrictRegex(String)}进行格式匹配
+     * 采用{@link DateHelper#styleByStrictRegex(String)}进行格式匹配
      * </strong>
      */
     public static DateStyle style(String text) {
-        return styleWithStrictRegex(text);
-    }
-
-    /**
-     * 通过日期格式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
-     * <strong>
-     * 此方法转换效率高，但对于一些特定格式无法准确匹配
-     * </strong>
-     */
-    public static DateStyle styleWithPattern(String text) {
-        if (text == null || "".equals(text.trim())) {
-            return null;
-        }
-        return Arrays.stream(DateStyle.values())
-                .filter(style -> {
-                    if (style.showOnly()) {
-                        return false;
-                    }
-                    try {
-                        ParsePosition pos = new ParsePosition(0);
-                        Date dateTmp = sdf(style.value()).parse(text, pos);
-                        if (dateTmp != null && pos.getIndex() == text.length()) {
-                            return true;
-                        }
-                    } catch (Exception ignored) {
-                    }
-                    return false;
-                })
-                .findAny().orElse(null);
+        return styleByStrictRegex(text);
     }
 
     /**
@@ -133,7 +80,7 @@ public final class DateHelper {
      *
      * @see DateStyle.Type
      */
-    public static DateStyle styleWithTypeAndPattern(String text) {
+    public static DateStyle styleByPattern(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
@@ -166,14 +113,14 @@ public final class DateHelper {
      * <strong>
      * 只对时间单位的长度限制进行匹配，不检验取值范围有效性。例如：
      * <pre>
-     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-04-39"))==true;
+     *     DateStyle.YYYY_MM_DD.equal(styleByRegex("2017-04-39"))==true;
      * </pre>
      * </strong>
      *
      * @see DateStyle#regex()
      * @see DateStyle.Regex
      */
-    public static DateStyle styleWithRegex(String text) {
+    public static DateStyle styleByRegex(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
@@ -187,15 +134,15 @@ public final class DateHelper {
      * <strong>
      * 此方法同时对时间单位的长度限制和取值范围进行匹配。例如：
      * <pre>
-     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-04-39"))==false;
-     *     DateStyle.YYYY_MM_DD.equal(styleWithRegex("2017-4-19"))==true;
+     *     DateStyle.YYYY_MM_DD.equal(styleByRegex("2017-04-39"))==false;
+     *     DateStyle.YYYY_MM_DD.equal(styleByRegex("2017-4-19"))==true;
      * </pre>
      * </strong>
      *
      * @see DateStyle#strictRegex()
      * @see DateStyle.StrictRegex
      */
-    public static DateStyle styleWithStrictRegex(String text) {
+    public static DateStyle styleByStrictRegex(String text) {
         if (text == null || "".equals(text.trim())) {
             return null;
         }
@@ -269,8 +216,8 @@ public final class DateHelper {
         if (style == null) {
             return null;
         }
-        Object cls = style.type().value();
-        return parse(text, style, cls);
+        Class clazz = style.type().value();
+        return parse(text, style, clazz);
     }
 
     /**
@@ -280,9 +227,9 @@ public final class DateHelper {
      * @throws IllegalArgumentException
      */
     @Deprecated
-    public static <T> LocalDateTime parse(String text, T t) {
+    public static <T> LocalDateTime parse(String text, Class<T> clazz) {
         DateStyle style = style(text);
-        return parse(text, style, t);
+        return parse(text, style, clazz);
     }
 
     /**
@@ -291,8 +238,8 @@ public final class DateHelper {
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    public static <T> LocalDateTime parse(String text, DateStyle style, T t) {
-        return parse(text, style.value(), t);
+    public static <T> LocalDateTime parse(String text, DateStyle style, Class<T> clazz) {
+        return parse(text, style.value(), clazz);
     }
 
     /**
@@ -301,8 +248,8 @@ public final class DateHelper {
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    public static <T> LocalDateTime parse(String text, String pattern, T t) {
-        Type type = type(t);
+    public static <T> LocalDateTime parse(String text, String pattern, Class<T> clazz) {
+        Type type = type(clazz);
         try {
             switch (type) {
                 case DATE:
@@ -333,12 +280,12 @@ public final class DateHelper {
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    public static <T> T parseToObject(String text, T t) {
+    public static <T> T parseToObject(String text, Class<T> clazz) {
         DateStyle style = style(text);
         if (style == null) {
             return null;
         }
-        return parseToObject(text, style, t);
+        return parseToObject(text, style, clazz);
     }
 
     /**
@@ -348,8 +295,8 @@ public final class DateHelper {
      * @throws IllegalArgumentException
      */
     @SuppressWarnings("unchecked")
-    public static <T> T parseToObject(String text, String pattern, T t) {
-        Type type = type(t);
+    public static <T> T parseToObject(String text, String pattern, Class<T> clazz) {
+        Type type = type(clazz);
         try {
             switch (type) {
                 case DATE:
@@ -376,29 +323,8 @@ public final class DateHelper {
      * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    public static <T> T parseToObject(String text, DateStyle style, T t) {
-        return parseToObject(text, style.value(), t);
-    }
-
-    /**
-     * 将{@link LocalDateTime}格式化为字符串{@link String}。默认格式{@link #DEFAULT_FORMATTER_STYLE}
-     */
-    public static String format(LocalDateTime dateTime) {
-        return dateTime.format(DEFAULT_FORMATTER);
-    }
-
-    /**
-     * 将{@link LocalDateTime}格式化为字符串{@link String}
-     */
-    public static String format(LocalDateTime dateTime, String pattern) {
-        return dateTime.format(formatter(pattern));
-    }
-
-    /**
-     * 将{@link LocalDateTime}格式化为字符串{@link String}
-     */
-    public static String format(LocalDateTime dateTime, DateStyle style) {
-        return dateTime.format(formatter(style));
+    public static <T> T parseToObject(String text, DateStyle style, Class<T> clazz) {
+        return parseToObject(text, style.value(), clazz);
     }
 
     public static LocalDateTime parseByRegex(String text) {
@@ -410,7 +336,7 @@ public final class DateHelper {
         int hour = 0;
         int minute = 0;
         int second = 0;
-        int[] timeParts = style.strictLength() ? timePartStrict(text, style) : timePart(text, style);
+        int[] timeParts = style.lengthStrict() ? timePartStrict(text, style) : timePart(text, style);
         if (timeParts == null || timeParts.length != style.contains().size()) {
             throw new RuntimeException("转换错误");
         }
@@ -420,19 +346,19 @@ public final class DateHelper {
                     year = timeParts[i];
                     break;
                 case MONTH:
-                    year = timeParts[i];
+                    month = timeParts[i];
                     break;
                 case DAY:
-                    year = timeParts[i];
+                    day = timeParts[i];
                     break;
                 case HOUR:
-                    year = timeParts[i];
+                    hour = timeParts[i];
                     break;
                 case MINUTE:
-                    year = timeParts[i];
+                    minute = timeParts[i];
                     break;
                 case SECOND:
-                    year = timeParts[i];
+                    second = timeParts[i];
                     break;
                 default:
                     break;
@@ -454,7 +380,7 @@ public final class DateHelper {
     }
 
     private static int[] timePartStrict(String text, DateStyle style) {
-        if (!style.strictLength()) {
+        if (!style.lengthStrict()) {
             throw new IllegalArgumentException("非法参数");
         }
         int start = 0;
@@ -468,6 +394,27 @@ public final class DateHelper {
             }
         }
         return list.stream().mapToInt(i -> i).toArray();
+    }
+
+    /**
+     * 将{@link LocalDateTime}格式化为字符串{@link String}。默认格式{@link #DEFAULT_FORMATTER_STYLE}
+     */
+    public static String format(LocalDateTime dateTime) {
+        return dateTime.format(DEFAULT_FORMATTER);
+    }
+
+    /**
+     * 将{@link LocalDateTime}格式化为字符串{@link String}
+     */
+    public static String format(LocalDateTime dateTime, String pattern) {
+        return dateTime.format(formatter(pattern));
+    }
+
+    /**
+     * 将{@link LocalDateTime}格式化为字符串{@link String}
+     */
+    public static String format(LocalDateTime dateTime, DateStyle style) {
+        return dateTime.format(formatter(style));
     }
 
     //======================================格式转换 结束===================================

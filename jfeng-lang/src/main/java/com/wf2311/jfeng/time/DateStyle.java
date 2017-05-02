@@ -179,7 +179,7 @@ public enum DateStyle {
      * {@link DateStyle#YYYY_MM_DD}的<code>strictRegex=false</code>,其值的长度不固定，2017-04-01匹配成功，2017-4-1也可以匹配成功；
      * </p>
      */
-    private final boolean strictLength;
+    private final boolean lengthStrict;
 
 
     private final List<Part> contains;
@@ -190,16 +190,16 @@ public enum DateStyle {
         this.type = type;
         this.regex = _regex();
         this.strictRegex = _strictRegex();
-        this.strictLength = false;
+        this.lengthStrict = false;
         this.contains = _contains();
     }
 
-    DateStyle(String value, Type type, boolean formatOnly, boolean strictLength) {
+    DateStyle(String value, Type type, boolean formatOnly, boolean lengthStrict) {
         this.value = value;
         this.formatOnly = formatOnly;
         this.type = type;
-        this.strictLength = strictLength;
-        if (strictLength) {
+        this.lengthStrict = lengthStrict;
+        if (lengthStrict) {
             this.regex = regexNum(value.length());
         } else {
             this.regex = _regex();
@@ -224,8 +224,8 @@ public enum DateStyle {
         return regex;
     }
 
-    public boolean strictLength() {
-        return strictLength;
+    public boolean lengthStrict() {
+        return lengthStrict;
     }
 
     public final String strictRegex() {
@@ -372,13 +372,13 @@ public enum DateStyle {
         YEAR_MONTH(YearMonth.class),
         MONTH_DAY(MonthDay.class);
 
-        private Class value;
+        private Class<?> value;
 
-        Type(Class value) {
+        Type(Class<?> value) {
             this.value = value;
         }
 
-        public Object value() {
+        public Class<?> value() {
             return value;
         }
 

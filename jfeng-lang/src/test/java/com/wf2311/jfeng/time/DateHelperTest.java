@@ -1,5 +1,7 @@
 package com.wf2311.jfeng.time;
 
+import com.alibaba.fastjson.JSON;
+import com.wf2311.jfeng.exception.WfException;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
@@ -23,7 +25,7 @@ public class DateHelperTest extends TestCase {
         Assert.assertEquals(DateStyle.SLASH_YYYY_MM_DD_HH_MM_SS, DateHelper.style("2017/04/27 21:29:32"));
         Assert.assertEquals(DateStyle.YYYY_MM, DateHelper.style("2017-04"));
         Assert.assertEquals(DateStyle.YYYY_MM_DD_HH_MM, DateHelper.style("2017-04-27 21:29"));
-        Assert.assertEquals(DateStyle.YYYY_MM_DD_HH, DateHelper.style("2017-04-27 21"));
+        Assert.assertEquals(DateStyle .YYYY_MM_DD_HH, DateHelper.style("2017-04-27 21"));
         Assert.assertEquals(DateStyle.YYYYMM, DateHelper.style("201704"));
         Assert.assertEquals(DateStyle.YYYYMMDD, DateHelper.style("20170427"));
         Assert.assertEquals(DateStyle.YYYYMMDDHH, DateHelper.style("2017042721"));
@@ -47,25 +49,20 @@ public class DateHelperTest extends TestCase {
 
     public void test_style4() throws Exception {
         IntStream.range(0, 10000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithTypeAndPattern(value))));
-    }
-
-    public void test_style5() throws Exception {
-        IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithPattern(value))));
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleByPattern(value))));
     }
 
     public void test_style51() throws Exception {
         IntStream.range(0, 1).forEach(
                 i -> TimeConsts.map.forEach((key, value) -> {
-                    DateStyle style = DateHelper.styleWithRegex(value);
+                    DateStyle style = DateHelper.styleByRegex(value);
                     System.out.println(key.equals(style) + "\t" + key + "\t" + value + "\t" + style);
                 }));
     }
 
     public void test_style6() throws Exception {
         IntStream.range(0, 100000).parallel().forEach(
-                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleWithRegex(value))));
+                i -> TimeConsts.map.forEach((key, value) -> Assert.assertEquals(key, DateHelper.styleByRegex(value))));
     }
 
     public void testDateToLocalDate() throws Exception {
@@ -180,7 +177,7 @@ public class DateHelperTest extends TestCase {
         IntStream.range(0, 100000).parallel().forEach(
                 i -> TimeConsts.map.forEach((key, value) -> {
                     DateHelper.parse(value);
-//                    System.out.println(key.value() + "\t" + value + "\t" + DateHelper.parseByRegex(value));
+                    System.out.println(key.value() + "\t" + value + "\t" + DateHelper.parseByRegex(value));
                 }));
 
     }
