@@ -80,7 +80,6 @@ public class DateHelperTest extends TestCase {
         String text = "2017年04月21日 16时35分";
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 16, 35, 0), DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 16, 35, 0), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 16, 35, 0), DateHelper.parse(text, LocalDateTime.class));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 16, 35, 0), DateHelper.parseToObject(text, LocalDateTime.class));
     }
 
@@ -88,7 +87,6 @@ public class DateHelperTest extends TestCase {
         String text = "2017年04月21日";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 0, 0, 0), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 0, 0, 0), DateHelper.parse(text, LocalDate.class));
         Assert.assertEquals(LocalDate.of(2017, 4, 21), DateHelper.parseToObject(text, LocalDate.class));
     }
 
@@ -96,7 +94,6 @@ public class DateHelperTest extends TestCase {
         String text = "2017年04月";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 1, 0, 0, 0), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(2017, 4, 1, 0, 0, 0), DateHelper.parse(text, YearMonth.class));
         Assert.assertEquals(YearMonth.of(2017, 4), DateHelper.parseToObject(text, YearMonth.class));
     }
 
@@ -104,7 +101,6 @@ public class DateHelperTest extends TestCase {
         String text = "04月21日";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 0, 0, 0), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(2017, 4, 21, 0, 0, 0), DateHelper.parse(text, MonthDay.class));
         Assert.assertEquals(MonthDay.of(4, 21), DateHelper.parseToObject(text, MonthDay.class));
     }
 
@@ -112,7 +108,6 @@ public class DateHelperTest extends TestCase {
         String text = "16:35:10";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35, 10)), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35, 10)), DateHelper.parse(text, LocalTime.class));
         Assert.assertEquals(LocalTime.of(16, 35, 10), DateHelper.parseToObject(text, LocalTime.class));
     }
 
@@ -120,7 +115,6 @@ public class DateHelperTest extends TestCase {
         String text = "16时35分10秒";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35, 10)), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35, 10)), DateHelper.parse(text, LocalTime.class));
         Assert.assertEquals(LocalTime.of(16, 35, 10), DateHelper.parseToObject(text, LocalTime.class));
     }
 
@@ -128,7 +122,6 @@ public class DateHelperTest extends TestCase {
         String text = "16时35分";
         Assert.assertEquals(null, DateHelper.parseStrict(text));
         Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35)), DateHelper.parse(text));
-        Assert.assertEquals(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35)), DateHelper.parse(text, LocalTime.class));
         Assert.assertEquals(LocalTime.of(16, 35), DateHelper.parseToObject(text, LocalTime.class));
     }
 
@@ -178,7 +171,14 @@ public class DateHelperTest extends TestCase {
         String date = "2/5/2017 14点:6分";
         Formatter formatter = new Formatter("dd/MM/yyyy HH点:mm分");
         LocalDateTime parse = DateHelper.parse(date, formatter);
-        System.out.println(parse);
+        Assert.assertEquals(LocalDateTime.of(2017, 5, 2, 14, 6, 0), parse);
+    }
+
+    public void test_parse_format_strict() {
+        String date = "0205201706";
+        Formatter formatter = new Formatter("ddMMyyyymm");
+        LocalDateTime parse = DateHelper.parse(date, formatter);
+        Assert.assertEquals(LocalDateTime.of(2017, 5, 2, 0, 6, 0), parse);
     }
 
     public void test_parseByAuto() {

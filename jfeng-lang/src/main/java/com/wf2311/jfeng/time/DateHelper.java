@@ -45,11 +45,18 @@ public final class DateHelper {
     /**
      * 创建{@link DateTimeFormatter}
      */
+    public static DateTimeFormatter formatter(Formatter formatter) {
+        return formatter(formatter.value());
+    }
+
+    /**
+     * 创建{@link DateTimeFormatter}
+     */
     public static DateTimeFormatter formatter(DateStyle dateStyle) {
         return formatter(dateStyle.value());
     }
 
-    private static Type type(Object support) {
+    private static Type type(Class<?> support) {
         Type type = Type.find(support);
         if (type == null) {
             throw new IllegalArgumentException("不支持的转换类型：" + support);
@@ -74,7 +81,7 @@ public final class DateHelper {
     /**
      * 通过日期类型和格式从{@link DateStyle}中匹配时间格式。如果不存在，返回<code>null</code>
      * <strong>
-     * 此方法转换时间要5倍于其他方法
+     * 此方法花费的转换时间要5倍于其他方法
      * </strong>
      *
      * @see Formatter.Type
@@ -168,26 +175,11 @@ public final class DateHelper {
 
     //========================================格式转换=====================================
 
-    private static LocalDateTime parse(String text, DateTimeFormatter formatter) {
-        try {
-            return LocalDateTime.parse(text, formatter);
-        } catch (Exception ignore) {
-            return null;
-        }
-    }
-
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      */
     public static LocalDateTime parse(String text, String pattern) {
-        return parse(text, formatter(pattern));
-    }
-
-    /**
-     * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
-     */
-    public static LocalDateTime parse(String text, DateStyle style) {
-        return parse(text, formatter(style));
+        return parse(text, new Formatter(pattern));
     }
 
     /**
@@ -215,30 +207,26 @@ public final class DateHelper {
         if (style == null) {
             return null;
         }
-        Class clazz = style.type().value();
-        return parse(text, style, clazz);
+        return parse(text, style);
     }
 
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    @Deprecated
-    public static <T> LocalDateTime parse(String text, Class<T> clazz) {
-        DateStyle style = style(text);
-        return parse(text, style, clazz);
+    public static LocalDateTime parseByRegex(String text) {
+        Formatter formatter = style(text).formatter();
+        return parse(text, formatter);
     }
 
     /**
      * 将时间字符串{@link String}转为{@link LocalDateTime}。如果无法转换，返回<code>null</code>
      *
-     * @param <T> 取值{@link Type#value()}
      * @throws IllegalArgumentException
      */
-    public static <T> LocalDateTime parse(String text, DateStyle style, Class<T> clazz) {
-        return parse(text, style.value(), clazz);
+    public static LocalDateTime parse(String text, DateStyle style) {
+        return parse(text, style.value(), style.type().value());
     }
 
     /**
@@ -316,6 +304,7 @@ public final class DateHelper {
         }
     }
 
+
     /**
      * 将时间字符串{@link String}转为指定时间类型。如果无法转换，返回<code>null</code>
      *
@@ -367,11 +356,6 @@ public final class DateHelper {
      */
     public static <T> T parseToObject(String text, DateStyle style, Class<T> clazz) {
         return parseToObject(text, style.value(), clazz);
-    }
-
-    public static LocalDateTime parseByRegex(String text) {
-        Formatter formatter = style(text).formatter();
-        return parse(text, formatter);
     }
 
     private static int[] timePart(String text, Formatter formatter) {
