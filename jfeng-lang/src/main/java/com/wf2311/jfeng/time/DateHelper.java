@@ -594,4 +594,20 @@ public final class DateHelper {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
     //======================================类型转换 结束===================================
+
+
+    //======================================other 开始===================================
+
+
+    public static long unixTimestamp(LocalDateTime time) {
+        return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
+    }
+
+    public static long currentUnixTimestamp() {
+        return LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
+    }
+
+    //======================================other 结束===================================
+
+
 }
