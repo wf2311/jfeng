@@ -7,7 +7,7 @@
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <modules>
         <!--<module>jfeng-commons-test</module>-->
         <!--<module>jfeng-test-api</module>-->
