@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.joining;
  */
 public abstract class Strman {
 
-    private static final Predicate<String> NULL_STRING_PREDICATE = str -> str == null;
+    private static final Predicate<String> NULL_STRING_PREDICATE = Objects::isNull;
     private static final Supplier<String> NULL_STRING_MSG_SUPPLIER = () -> "'value' should be not null.";
 
     private Strman() {
