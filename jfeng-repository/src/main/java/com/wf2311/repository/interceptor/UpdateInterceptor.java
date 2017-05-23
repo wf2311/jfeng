@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * @time 2016/06/12 14:00.
  */
 @Aspect
-public class UpdateInterceptor extends CrudInterceptor {
+public abstract class UpdateInterceptor extends CrudInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(UpdateInterceptor.class);
 
     @Pointcut("execution(* com.wf2311.*.*.mapper.*Mapper.update*(..))")
