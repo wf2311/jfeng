@@ -13,6 +13,7 @@
         <!--<module>jfeng-test-api</module>-->
         <!--<module>jfeng-test-jfinal-api</module>-->
         <module>jfeng-lang</module>
+        <module>jfeng-repository</module>
     </modules>
 
     <properties>
