@@ -25,12 +25,12 @@ public abstract class CrudInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(CrudInterceptor.class);
 
-    protected static List<? extends Object> EXCLUDE_MODEL= Arrays.asList(
+    protected static List<? extends Object> EXCLUDE_MODEL = Arrays.asList(
     );
 
     protected final static IdCreator idCreator = new IdCreator(1, 1);
 
-    public boolean shouldIntercept(Object arg){
+    public boolean shouldIntercept(Object arg) {
         return !EXCLUDE_MODEL.contains(arg.getClass());
     }
 
@@ -39,7 +39,7 @@ public abstract class CrudInterceptor {
         BaseUser userInfo = new BaseUser();
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    
+
             userInfo = (BaseUser) request.getAttribute(Constants.USER_INFO);
             if (userInfo == null || userInfo.getId() == null) {
                 userInfo = new BaseUser();
@@ -53,7 +53,7 @@ public abstract class CrudInterceptor {
 
     public abstract void before(JoinPoint joinPoint);
 
-    public boolean existMethod(Object o,String name, Class<?> c) {
+    public boolean existMethod(Object o, String name, Class<?> c) {
         try {
             Method method = o.getClass().getMethod(name, c);
             return method != null;
@@ -62,7 +62,7 @@ public abstract class CrudInterceptor {
         }
     }
 
-    public boolean existMethod(Object o,String name) {
+    public boolean existMethod(Object o, String name) {
         try {
             Method method = o.getClass().getMethod(name);
             return method != null;
@@ -108,22 +108,14 @@ public abstract class CrudInterceptor {
 
     static boolean shouldSetModifier(Object obj, Field field) {
         if (field.isAnnotationPresent(Modifier.class)) {
-            try {
-                return ReflectUtils.getFiledValue(obj, field) == null;
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage());
-            }
+            return true;
         }
         return false;
     }
 
     protected static boolean shouldSetModifiedTime(Object obj, Field field) {
         if (field.isAnnotationPresent(ModifiedTime.class)) {
-            try {
-                return ReflectUtils.getFiledValue(obj, field) == null;
-            } catch (IllegalAccessException e) {
-                logger.error(e.getMessage());
-            }
+            return true;
         }
         return false;
     }
