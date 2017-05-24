@@ -34,7 +34,7 @@ public abstract class UpdateInterceptor extends CrudInterceptor {
             if (ArrayUtils.isNotEmpty(fields)) {
                 try {
                     for (Field field : fields) {
-                        Annotation[] as = fields.getClass().getDeclaredAnnotations();
+                        Annotation[] as = field.getDeclaredAnnotations();
                         if (ArrayUtils.isNotEmpty(as)) {
                             if (shouldSetModifier(arg, field)) {
                                 ReflectUtils.setFiledValue(arg, field, getUserInfo().getId());
