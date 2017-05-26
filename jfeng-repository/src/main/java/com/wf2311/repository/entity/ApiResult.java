@@ -22,8 +22,8 @@ public class ApiResult<T> {
     @ApiModelProperty(name = "返回结果代号", required = true, notes = "主要用于表示返回失败的原因类别")
     private int code = 0;
 
-    @ApiModelProperty(name = "返回结果", required = true, notes = "0:成功;-1:失败;")
-    private String status = "0";
+    @ApiModelProperty(name = "返回结果", required = true, notes = "true:成功;false:失败;")
+    private boolean success = true;
 
     @ApiModelProperty(name = "返回信息")
     private String message;
@@ -31,15 +31,12 @@ public class ApiResult<T> {
     @ApiModelProperty(name = "返回结果主体")
     private T data;
 
-    public String getStatus() {
-        if (getCode() != 0) {
-            setStatus("-1");
-        }
-        return status;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public int getCode() {
