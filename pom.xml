@@ -14,6 +14,7 @@
         <!--<module>jfeng-test-jfinal-api</module>-->
         <module>jfeng-lang</module>
         <module>jfeng-repository</module>
+        <module>jfeng-tuple</module>
     </modules>
 
     <properties>
