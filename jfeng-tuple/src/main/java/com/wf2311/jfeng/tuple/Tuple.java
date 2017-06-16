@@ -255,4 +255,8 @@ public abstract class Tuple implements Iterable<Object>, Serializable {
                 return TupleN.withList(list);
         }
     }
+
+    public static Tuple with(final Object... elements) {
+        return withList(Arrays.asList(elements));
+    }
 }
