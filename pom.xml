@@ -15,6 +15,7 @@
         <module>jfeng-lang</module>
         <module>jfeng-repository</module>
         <module>jfeng-tuple</module>
+        <module>jfeng-mybatis-generator</module>
     </modules>
 
     <properties>
