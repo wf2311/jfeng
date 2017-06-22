@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 /**
  * @author wf2311
- * @time 2016/06/12 14:00.
  */
 @Aspect
 public abstract class UpdateInterceptor extends CrudInterceptor {
@@ -23,7 +22,6 @@ public abstract class UpdateInterceptor extends CrudInterceptor {
 
     @Pointcut("execution(* com.wf2311.*.*.mapper.*Mapper.update*(..))")
     public void aspect() {
-
     }
 
     @Before("aspect()")

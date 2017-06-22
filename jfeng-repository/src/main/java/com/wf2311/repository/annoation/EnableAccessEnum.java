@@ -4,13 +4,16 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Enumeration;
 
 /**
- * 数据库字段自增长标志
- * @author wf2311
+ * @author wangfeng
+ * @time 2017/06/22 16:58.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface AutoIncrement {
+@Target(ElementType.TYPE)
+public @interface EnableAccessEnum {
+
+    String name() default "";
+
+//    Class<?> type() default "";
 }

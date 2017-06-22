@@ -1,8 +1,7 @@
 package com.wf2311.repository.entity;
 
 /**
- * @author wangfeng
- * @time 2017/05/27 17:01.
+ * @author wf2311
  */
 public class Page {
     /**

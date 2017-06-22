@@ -3,7 +3,6 @@ package com.wf2311.jfeng.exception;
 /**
  * 自定义异常
  * @author: wf2311
- * @date: 2015/10/20 16:43
  */
 public class WfException extends RuntimeException {
     protected int code;

@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiModelProperty;
  *
  * @param <T>
  * @author wf2311
- * @time 2016-10-14 16:10:14
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(description = "api返回基类")

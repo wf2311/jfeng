@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 /**
  * @author wf2311
- * @time 2016/06/12 13:50.
  */
 @Aspect
 public abstract class InsertInterceptor extends CrudInterceptor {

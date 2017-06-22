@@ -1,8 +1,7 @@
 package com.wf2311.repository.entity;
 
 /**
- * @author wangfeng
- * @time 2017/05/23 15:20.
+ * @author wf2311
  */
 public class BaseUser {
     private Long id;

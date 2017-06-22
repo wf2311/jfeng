@@ -19,7 +19,6 @@ import java.util.List;
 
 /**
  * @author wf2311
- * @time 2016/06/12 14:03.
  */
 public abstract class CrudInterceptor {
 

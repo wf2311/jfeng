@@ -9,7 +9,6 @@ import java.util.List;
  * 基本分页组件
  *
  * @author wf2311
- * @date 2016/03/10 18:46:07
  */
 public class Pager<T> implements Serializable {
 

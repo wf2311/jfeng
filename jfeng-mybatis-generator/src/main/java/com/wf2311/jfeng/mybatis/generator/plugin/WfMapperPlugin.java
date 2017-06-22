@@ -1,5 +1,6 @@
 package com.wf2311.jfeng.mybatis.generator.plugin;
 
+import com.wf2311.jfeng.mybatis.generator.MapperPlugin;
 import com.wf2311.repository.annoation.*;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -9,7 +10,6 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import tk.mybatis.mapper.generator.MapperPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +28,7 @@ public class WfMapperPlugin extends MapperPlugin {
         annotations.put("@Modifier", Modifier.class);
         annotations.put("@ModifiedTime", ModifiedTime.class);
         annotations.put("@AutoIncrement", AutoIncrement.class);
+        annotations.put("@Unique", Unique.class);
     }
 
     public static void generate() {

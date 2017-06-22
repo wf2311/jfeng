@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * 数据修改时间标志
  * @author wf2311
- * @time 2016/10/15 02:35.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
