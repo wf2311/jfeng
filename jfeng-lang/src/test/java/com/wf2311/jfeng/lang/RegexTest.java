@@ -1,5 +1,6 @@
 package com.wf2311.jfeng.lang;
 
+import com.wf2311.jfeng.regex.Regex;
 import com.wf2311.jfeng.time.DateStyle;
 import com.wf2311.jfeng.time.TimeConsts;
 import junit.framework.TestCase;
@@ -19,16 +20,16 @@ import java.util.stream.IntStream;
  */
 public class RegexTest extends TestCase {
     public void test_month() {
-        IntStream.range(0, 50).forEach(i -> System.out.println(i + "\t" + Pattern.matches(Regexs.month, (i < 10 ? "0" : "") + String.valueOf(i))));
+        IntStream.range(0, 50).forEach(i -> System.out.println(i + "\t" + Pattern.matches(Regex.MONTH, (i < 10 ? "0" : "") + String.valueOf(i))));
     }
 
     public void test_dayOfMonth() {
-        IntStream.range(0, 50).forEach(i -> System.out.println(i + "\t" + Pattern.matches(Regexs.dayOfMonth, (i < 10 ? "0" : "") + String.valueOf(i))));
+        IntStream.range(0, 50).forEach(i -> System.out.println(i + "\t" + Pattern.matches(Regex.DAY_OF_MONTH, (i < 10 ? "0" : "") + String.valueOf(i))));
     }
 
 
     public void test_monthDay() {
-        String s = Regexs.month + "-" + Regexs.dayOfMonth;
+        String s = Regex.MONTH + "-" + Regex.DAY_OF_MONTH;
         s = s.replaceAll("\\^", "\\").replaceAll("$", "");
         System.out.println(s);
 //        boolean matches = Pattern.matches(s, "12-31");
