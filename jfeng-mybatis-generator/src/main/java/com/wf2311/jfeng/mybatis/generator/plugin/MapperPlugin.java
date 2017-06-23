@@ -22,8 +22,9 @@
  * THE SOFTWARE.
  */
 
-package com.wf2311.jfeng.mybatis.generator;
+package com.wf2311.jfeng.mybatis.generator.plugin;
 
+import com.wf2311.jfeng.mybatis.generator.MapperCommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -46,6 +47,8 @@ import java.util.Set;
  * @author liuzh
  */
 public class MapperPlugin extends PluginAdapter {
+
+    private String supClass = "";
     private Set<String> mappers = new HashSet<String>();
     private boolean caseSensitive = false;
     //开始的分隔符，例如mysql为`，sqlserver为[
@@ -72,12 +75,17 @@ public class MapperPlugin extends PluginAdapter {
     public void setProperties(Properties properties) {
         super.setProperties(properties);
         String mappers = this.properties.getProperty("mappers");
+
         if (StringUtility.stringHasValue(mappers)) {
             for (String mapper : mappers.split(",")) {
                 this.mappers.add(mapper);
             }
         } else {
             throw new RuntimeException("Mapper插件缺少必要的mappers属性!");
+        }
+        String supClass = this.properties.getProperty("superClass");
+        if (StringUtility.stringHasValue(supClass)){
+            this.supClass = supClass;
         }
         String caseSensitive = this.properties.getProperty("caseSensitive");
         if (StringUtility.stringHasValue(caseSensitive)) {
@@ -163,6 +171,12 @@ public class MapperPlugin extends PluginAdapter {
                 || StringUtility.stringHasValue(beginningDelimiter)
                 || StringUtility.stringHasValue(endingDelimiter)) {
             topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
+        }
+        //实体类父类
+        if (topLevelClass.getSuperClass() == null && StringUtility.stringHasValue(supClass)) {
+            FullyQualifiedJavaType superClass = new FullyQualifiedJavaType(supClass);
+            topLevelClass.addImportedType(superClass);
+            topLevelClass.setSuperClass(superClass);
         }
     }
 
