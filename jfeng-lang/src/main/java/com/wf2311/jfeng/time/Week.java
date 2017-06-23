@@ -3,7 +3,6 @@ package com.wf2311.jfeng.time;
 /**
  * 星期周枚举
  * @author wf2311
- * @date 2016/05/13 13:57.
  */
 public enum Week {
 

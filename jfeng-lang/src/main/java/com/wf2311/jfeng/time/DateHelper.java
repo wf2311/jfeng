@@ -20,7 +20,6 @@ import static com.wf2311.jfeng.time.Formatter.*;
  * java8 时间工具类
  *
  * @author wf2311
- * @date 2017/04/20 22:12.
  */
 public final class DateHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(DateHelper.class);
@@ -42,8 +41,7 @@ public final class DateHelper {
      * 创建{@link DateTimeFormatter}
      */
     public static DateTimeFormatter formatter(String pattern) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern).withResolverStyle(ResolverStyle.LENIENT);
-        return formatter;
+        return DateTimeFormatter.ofPattern(pattern).withResolverStyle(ResolverStyle.LENIENT);
     }
 
     /**
@@ -95,23 +93,23 @@ public final class DateHelper {
             return null;
         }
         DateStyle style;
-        style = _style0(Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
+        style = style0(Type.DATETIME, s -> LocalDateTime.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.DATE, s -> LocalDate.parse(text, formatter(s)) != null);
+        style = style0(Type.DATE, s -> LocalDate.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.TIME, s -> LocalTime.parse(text, formatter(s)) != null);
+        style = style0(Type.TIME, s -> LocalTime.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.YEAR_MONTH, s -> YearMonth.parse(text, formatter(s)) != null);
+        style = style0(Type.YEAR_MONTH, s -> YearMonth.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
-        style = _style0(Type.MONTH_DAY, s -> MonthDay.parse(text, formatter(s)) != null);
+        style = style0(Type.MONTH_DAY, s -> MonthDay.parse(text, formatter(s)) != null);
         if (style != null) {
             return style;
         }
@@ -161,7 +159,7 @@ public final class DateHelper {
                 .findAny().orElse(null);
     }
 
-    private static DateStyle _style0(Type type, Predicate<DateStyle> predicate) {
+    private static DateStyle style0(Type type, Predicate<DateStyle> predicate) {
         return Arrays.stream(DateStyle.values())
                 .parallel()
                 .filter(style -> {
@@ -252,7 +250,7 @@ public final class DateHelper {
         int second = 0;
         int[] timeParts = formatter.lengthStrict() ? timePartStrict(text, formatter) : timePart(text, formatter);
         if (timeParts == null || timeParts.length != formatter.contains().size()) {
-            throw new RuntimeException("转换错误");
+            throw new TimeCastException("转换错误");
         }
         for (int i = 0; i < formatter.contains().size(); i++) {
             switch (formatter.contains().get(i)) {
@@ -373,11 +371,11 @@ public final class DateHelper {
         if (matcher.find()) {
             int[] part = new int[matcher.groupCount()];
             for (int i = 0; i < matcher.groupCount(); i++) {
-                part[i] = Integer.valueOf(matcher.group(i + 1));
+                part[i] = Integer.parseInt(matcher.group(i + 1));
             }
             return part;
         }
-        return null;
+        return new int[0];
     }
 
     private static int[] timePartStrict(String text, Formatter formatter) {
@@ -429,6 +427,9 @@ public final class DateHelper {
      * 所在日期的当年开始时刻
      */
     public static LocalDateTime startOfYear(LocalDateTime dateTime) {
+        if (dateTime==null){
+            throw new IllegalArgumentException();
+        }
         return LocalDateTime.of(LocalDate.of(dateTime.getYear(), 1, 1), LocalTime.MIN);
     }
 
@@ -470,7 +471,7 @@ public final class DateHelper {
      */
     public static LocalDateTime startOfWeek(LocalDateTime dateTime) {
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
-        return dateTime.minusDays(dayOfWeek.getValue() - 1).toLocalDate().atStartOfDay();
+        return dateTime.minusDays((long)dayOfWeek.getValue() - 1).toLocalDate().atStartOfDay();
     }
 
     /**
@@ -485,9 +486,9 @@ public final class DateHelper {
      */
     public static LocalDateTime dayOfWeek(LocalDateTime dateTime, int dayOfWeek) {
         if (dayOfWeek > 7 || dayOfWeek < 1) {
-            throw new IllegalArgumentException("非法参数！");
+            throw new IllegalArgumentException();
         }
-        return dateTime.plusDays(dayOfWeek - dateTime.getDayOfWeek().getValue());
+        return dateTime.plusDays((long)(dayOfWeek - dateTime.getDayOfWeek().getValue()));
     }
 
     /**
@@ -495,9 +496,9 @@ public final class DateHelper {
      */
     public static LocalDateTime dayOfWeek(LocalDateTime dateTime, DayOfWeek dayOfWeek) {
         if (dayOfWeek == null || dateTime == null) {
-            throw new IllegalArgumentException("非法参数！");
+            throw new IllegalArgumentException();
         }
-        return dateTime.plusDays(dayOfWeek.getValue() - dateTime.getDayOfWeek().getValue());
+        return dateTime.plusDays((long)(dayOfWeek.getValue() - dateTime.getDayOfWeek().getValue()));
     }
 
     /**
@@ -505,9 +506,9 @@ public final class DateHelper {
      */
     public static LocalDate dayOfWeek(LocalDate date, int dayOfWeek) {
         if (dayOfWeek > 7 || dayOfWeek < 1) {
-            throw new IllegalArgumentException("非法参数！");
+            throw new IllegalArgumentException();
         }
-        return date.plusDays(dayOfWeek - date.getDayOfWeek().getValue());
+        return date.plusDays((long)(dayOfWeek - date.getDayOfWeek().getValue()));
     }
 
     /**
@@ -517,7 +518,7 @@ public final class DateHelper {
         if (dayOfWeek == null) {
             throw new NullPointerException();
         }
-        return date.plusDays(dayOfWeek.getValue() - date.getDayOfWeek().getValue());
+        return date.plusDays((long) (dayOfWeek.getValue() - date.getDayOfWeek().getValue()));
     }
     //======================================时间变更 结束===================================
 

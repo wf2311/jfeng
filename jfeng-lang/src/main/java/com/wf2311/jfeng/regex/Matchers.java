@@ -10,10 +10,7 @@ import java.util.regex.Pattern;
 public final class Matchers {
 
     /**
-     *
-     * @param text
-     * @param regex
-     * @return
+     * 从<code>text</code>中匹配第一个符合正则表达式的字符串
      */
     public static String match(String text, String regex) {
         Pattern pattern = Pattern.compile(regex);

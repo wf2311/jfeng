@@ -9,7 +9,6 @@ import java.util.*;
  * 日期工具类
  *
  * @author wf2311
- * @date 2016/05/13 13:57.
  */
 public final class DateUtils implements Consts {
 
@@ -105,6 +104,7 @@ public final class DateUtils implements Consts {
      * @param amount   数值
      * @return 修改后日期字符串
      */
+    @Deprecated
     private static String setInteger(String date, int dateType, int amount) {
         String dateString = null;
         DateStyle dateStyle = style(date);

@@ -11,7 +11,6 @@ import static com.wf2311.jfeng.time.Formatter.*;
  * </strong>
  *
  * @author wf2311
- * @date 2017/04/20 22:15.
  */
 public enum DateStyle {
 

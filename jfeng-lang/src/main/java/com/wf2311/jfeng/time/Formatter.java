@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * @author wangfeng
- * @time 2017/05/02 13:19.
  */
 public class Formatter {
     /**
@@ -86,10 +85,10 @@ public class Formatter {
         if (lengthStrict) {
             this.regex = regexNum(value.length());
         } else {
-            this.regex = _regex();
+            this.regex = regex0();
         }
-        this.strictRegex = _strictRegex();
-        this.contains = _contains();
+        this.strictRegex = strictRegex0();
+        this.contains = contains0();
     }
 
     /**
@@ -155,7 +154,7 @@ public class Formatter {
         return contains;
     }
 
-    private String _regex() {
+    private String regex0() {
         String r = value
                 .replace(Part.YEAR.value, Regex.YEAR.value)
                 .replace(Part.MONTH.value, Regex.MONTH.value)
@@ -166,7 +165,7 @@ public class Formatter {
         return fillRegex(r);
     }
 
-    private String _strictRegex() {
+    private String strictRegex0() {
         String r = value
                 .replace(Part.YEAR.value, StrictRegex.YEAR.value)
                 .replace(Part.MONTH.value, StrictRegex.MONTH.value)
@@ -177,7 +176,7 @@ public class Formatter {
         return fillRegex(r);
     }
 
-    private List<Part> _contains() {
+    private List<Part> contains0() {
         List<Part> list = new ArrayList<>();
         Arrays.stream(value.split("")).distinct()
                 .forEach(s -> {

@@ -3,7 +3,6 @@ package com.wf2311.jfeng.time;
 /**
  * 月份枚举
  * @author wf2311
- * @date 2016/05/13 13:57.
  */
 public enum Month {
     JANUARY("一月", "January", "Jan.", 1),

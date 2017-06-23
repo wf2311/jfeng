@@ -7,7 +7,6 @@ import java.util.Locale;
  * 常用日期格式常量
  *
  * @author wf2311
- * @date 2016/03/21 12:46.
  */
 public interface Consts {
     /**
