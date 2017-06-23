@@ -2,6 +2,7 @@ package com.wf2311.jfeng.time;
 
 /**
  * 星期周枚举
+ *
  * @author wf2311
  */
 public enum Week {
@@ -23,7 +24,7 @@ public enum Week {
     String cn;
     String en;
     String enShort;
-    int    number;
+    int number;
 
     /**
      * @param cn      中文名
@@ -100,6 +101,7 @@ public enum Week {
 
     /**
      * 中文名
+     *
      * @return
      */
     public String getChineseName() {
@@ -108,6 +110,7 @@ public enum Week {
 
     /**
      * 英文名
+     *
      * @return
      */
     public String getName() {
@@ -116,6 +119,7 @@ public enum Week {
 
     /**
      * 英文缩写
+     *
      * @return
      */
     public String getShortName() {
@@ -124,6 +128,7 @@ public enum Week {
 
     /**
      * 数字
+     *
      * @return
      */
     public int getNumber() {

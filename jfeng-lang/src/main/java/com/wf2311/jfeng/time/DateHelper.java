@@ -250,7 +250,7 @@ public final class DateHelper {
         int second = 0;
         int[] timeParts = formatter.lengthStrict() ? timePartStrict(text, formatter) : timePart(text, formatter);
         if (timeParts == null || timeParts.length != formatter.contains().size()) {
-            throw new TimeCastException("转换错误");
+            return null;
         }
         for (int i = 0; i < formatter.contains().size(); i++) {
             switch (formatter.contains().get(i)) {
@@ -537,7 +537,34 @@ public final class DateHelper {
      * {@link LocalDateTime}转{@link Date}
      */
     public static Date toDate(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * {@link LocalTime}转{@link Date},日期为当天
+     *
+     * @return 今天的指定时刻
+     */
+    public static Date toDate(LocalTime time) {
+        if (time == null) {
+            return null;
+        }
+        return toDate(ofLocalTime(time));
+    }
+
+    /**
+     * {@link LocalDate}转{@link Date},时间为00:00:00
+     *
+     * @return 指定日期的零点
+     */
+    public static Date toDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return toDate(ofLocalDate(date));
     }
 
     /**
@@ -546,6 +573,9 @@ public final class DateHelper {
      * @return 当天的开始时刻
      */
     public static LocalDateTime ofLocalDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
         return LocalDateTime.of(date, LocalTime.MIN);
     }
 
