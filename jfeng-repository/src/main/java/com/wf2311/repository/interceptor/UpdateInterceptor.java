@@ -1,6 +1,6 @@
 package com.wf2311.repository.interceptor;
 
-import com.wf2311.jfeng.utils.ReflectUtils;
+import com.wf2311.jfeng.reflect.ReflectUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

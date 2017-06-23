@@ -1,7 +1,7 @@
 package com.wf2311.repository.interceptor;
 
 import com.wf2311.jfeng.id.IdCreator;
-import com.wf2311.jfeng.utils.ReflectUtils;
+import com.wf2311.jfeng.reflect.ReflectUtils;
 import com.wf2311.repository.annoation.*;
 import com.wf2311.repository.consts.Constants;
 import com.wf2311.repository.entity.BaseUser;

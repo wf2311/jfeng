@@ -1,5 +1,6 @@
 package com.wf2311.jfeng.regex;
 
+import static com.wf2311.jfeng.regex.Regex.*;
 
 /**
  * @author wf2311
@@ -25,6 +26,27 @@ public final class Validator {
             sb.append("$");
         }
         return text.matches(sb.toString());
+    }
+
+    /**
+     * 判断文本是否是电子邮箱
+     */
+    public static boolean isEmail(String text) {
+        return fullMatch(text, EMAIL);
+    }
+
+    /**
+     * 判断文本是否是手机号码
+     */
+    public static boolean isMobile(String text) {
+        return fullMatch(text, MOBILE);
+    }
+
+    /**
+     * 判断文本是否是汉字
+     */
+    public static boolean isChinese(String text) {
+        return fullMatch(text, CHINESE);
     }
 
 

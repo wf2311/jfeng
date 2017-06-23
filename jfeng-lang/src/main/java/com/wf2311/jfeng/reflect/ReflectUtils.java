@@ -1,11 +1,10 @@
-package com.wf2311.jfeng.utils;
+package com.wf2311.jfeng.reflect;
 
 
 import java.lang.reflect.Field;
 
 /**
  * @author wf2311
- * @time 2016/10/15 21:48.
  */
 public class ReflectUtils {
 
