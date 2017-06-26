@@ -47,6 +47,24 @@ public class ValidatorTest {
         list.forEach(System.out::println);
     }
 
+    @Test
+    public void testMatch2(){
+        String s = "<td class='colorTwo' align='center' ><td>黄金编码</td><td>客户姓名</td><td>当日余额</td><td>占用保证金</td><td>交易日期</td><td>开户机构</td></td>";
+        String regex = "<td(.+?)>(.+?)</td>";
+
+        List<String> list = Matchers.matchAll(s, regex);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testMatch3(){
+        String text = "(1(2)(3)(4)(5))";
+        String regex = "\\(([^>]*)\\)";
+
+        List<String> list = Matchers.matchAll(text, regex);
+        list.forEach(System.out::println);
+    }
+
     private static final String telephones = "fz1\t123456\n" +
             "测试爱爱爱\t13000000000\n" +
             "测试22qqqqq\t13022225895\n" +

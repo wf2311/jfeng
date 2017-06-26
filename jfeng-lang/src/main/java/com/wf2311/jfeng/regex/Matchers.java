@@ -16,6 +16,13 @@ public final class Matchers {
     }
 
     /**
+     * 用()包裹正则表达式
+     */
+    public static String wrapBracket(String regex) {
+        return "(" + regex + ")";
+    }
+
+    /**
      * 判读正则表达式中最外围是否用()包裹，从而确定匹配结果在<code>Matcher</>中第一次出现的位置
      *
      * @throws IllegalArgumentException 当正则表达式不正确是，抛出此异常
