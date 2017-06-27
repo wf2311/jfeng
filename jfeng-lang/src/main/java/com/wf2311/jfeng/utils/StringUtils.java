@@ -126,26 +126,25 @@ public class StringUtils {
             position.add(p);
             return;
         }
-        int subIndex = size - 1;
-        int i = 0;
-        while (rightIndex.get(i) > leftIndex.get(subIndex)) {
-            i++;
-        }
-        subIndex -= i;
-        calculate(leftIndex.subList(subIndex + 1, size), rightIndex.subList(0, i), position);
-        if (rightIndex.get(i + 1) < leftIndex.get(subIndex)) {
-            calculate(leftIndex.subList(0, subIndex + 1), rightIndex.subList(i, size), position);
-        } else {
-            if (i < rightIndex.size()) {
-                Integer[] p = new Integer[2];
-                p[0] = leftIndex.get(0);
-                p[1] = rightIndex.get(i);
-                position.add(p);
-                calculate(leftIndex.subList(1, subIndex + 1), rightIndex.subList(i + 1, size), position);
+        int pos = 0;
+        int tmpPos = pos;
+        while (rightIndex.get(tmpPos) > leftIndex.get(size - 1 - pos)) {
+            if (leftIndex.get(size - 1 - pos) > rightIndex.get(tmpPos + 1)) {
+                break;
             }
+            tmpPos++;
         }
-
-
+        if (leftIndex.get(size - 1 - tmpPos) < rightIndex.get(tmpPos + 1)) {
+            pos = tmpPos;
+            calculate(leftIndex.subList(0, size - 1 - pos), rightIndex.subList(pos + 1, size), position);
+        } else {
+            Integer[] p = new Integer[2];
+            p[0] = leftIndex.get(0);
+            p[1] = rightIndex.get(tmpPos);
+            position.add(p);
+            calculate(leftIndex.subList(1, size - 1 - pos), rightIndex.subList(pos + 1, size), position);
+        }
+        calculate(leftIndex.subList(size - 1 - pos, size), rightIndex.subList(0, tmpPos + 1), position);
     }
 
     public static void main(String[] args) {

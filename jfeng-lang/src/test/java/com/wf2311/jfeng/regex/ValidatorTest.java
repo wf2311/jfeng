@@ -1,7 +1,9 @@
 package com.wf2311.jfeng.regex;
 
+import com.wf2311.jfeng.time.DateHelper;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -63,6 +65,16 @@ public class ValidatorTest {
 
         List<String> list = Matchers.matchAll(text, regex);
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test31(){
+        LocalDateTime dt=LocalDateTime.of(2017, 6, 26, 21, 57, 16);
+        Long l=DateHelper.toDate(dt).getTime();
+        System.out.println(l);
+        LocalDateTime dt2=LocalDateTime.now();
+        Long l2 = DateHelper.toDate(dt2).getTime();
+        System.out.println(l2);
     }
 
     private static final String telephones = "fz1\t123456\n" +
