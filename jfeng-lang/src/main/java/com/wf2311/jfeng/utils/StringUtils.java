@@ -3,11 +3,8 @@ package com.wf2311.jfeng.utils;
 import com.alibaba.fastjson.JSON;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * 字符串工具类
@@ -93,7 +90,8 @@ public class StringUtils {
         if (leftIndex.size() != rightIndex.size()) {
             throw new IllegalArgumentException();
         }
-        List<int[]> position = new ArrayList<>();
+        Collections.reverse(rightIndex);
+        List<Integer[]> position = new ArrayList<>();
         calculate(leftIndex, rightIndex, position);
 
         return position;
@@ -104,6 +102,10 @@ public class StringUtils {
      * <code>
      * 1、 2、 3、6、9、11
      * 12、10、8、7、5、4
+     * <p>
+     * 0 1 2 3 4 5 6 7 8 9 10 11
+     * ( ( ( ) ) ( ) ) ( ) (  )
+     * (0,7)、(1,4)、(2,3)、(5,6)、(8,9)、(10,11)
      * </code>
      * 情况2：
      * <code>
@@ -114,28 +116,51 @@ public class StringUtils {
      * @return
      */
 
-    private static void calculate(List<Integer> leftIndex, List<Integer> rightIndex, List<int[]> position) {
+    private static void calculate(List<Integer> leftIndex, List<Integer> rightIndex, List<Integer[]> position) {
+
         int size = leftIndex.size();
+        if (size == 1) {
+            Integer[] p = new Integer[2];
+            p[0] = leftIndex.get(0);
+            p[1] = rightIndex.get(0);
+            position.add(p);
+            return;
+        }
         int subIndex = size - 1;
         int i = 0;
         while (rightIndex.get(i) > leftIndex.get(subIndex)) {
             i++;
-            subIndex--;
         }
-        calculate(leftIndex.subList(subIndex, size), rightIndex.subList(0, i), position);
-        if (i < rightIndex.size()) {
-            int[] p = new int[2];
-            p[0] = leftIndex.get(0);
-            p[1] = rightIndex.get(i);
-            position.add(p);
-            calculate(leftIndex.subList(1, subIndex), rightIndex.subList(i, size), position);
+        subIndex -= i;
+        calculate(leftIndex.subList(subIndex + 1, size), rightIndex.subList(0, i), position);
+        if (rightIndex.get(i + 1) < leftIndex.get(subIndex)) {
+            calculate(leftIndex.subList(0, subIndex + 1), rightIndex.subList(i, size), position);
+        } else {
+            if (i < rightIndex.size()) {
+                Integer[] p = new Integer[2];
+                p[0] = leftIndex.get(0);
+                p[1] = rightIndex.get(i);
+                position.add(p);
+                calculate(leftIndex.subList(1, subIndex + 1), rightIndex.subList(i + 1, size), position);
+            }
         }
+
 
     }
 
     public static void main(String[] args) {
-        String text = "((())())()()";
-        System.out.println(resolve(text, "(", ")"));
+//        String text = "((())())()()";
+//        List resolve = resolve(text, "(", ")");
+//        for (int i = 0; i < resolve.size(); i++) {
+//            System.out.println(JSON.toJSONString(resolve.get(i)));
+//        }
+//        System.out.println();
+
+        String text1 = "((())())(())";
+        List resolve1 = resolve(text1, "(", ")");
+        for (int i = 0; i < resolve1.size(); i++) {
+            System.out.println(JSON.toJSONString(resolve1.get(i)));
+        }
     }
 
 }
