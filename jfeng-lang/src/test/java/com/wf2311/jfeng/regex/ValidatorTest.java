@@ -49,9 +49,12 @@ public class ValidatorTest {
         list.forEach(System.out::println);
     }
 
+    String s = "<td class='colorTwo' align='center' ><td>黄金编码</td><td>客户姓名</td><td>当日余额</td><td>占用保证金</td><td>交易日期</td><td>开户机构</td></td>";
+
+
     @Test
     public void testMatch2(){
-        String s = "<td class='colorTwo' align='center' ><td>黄金编码</td><td>客户姓名</td><td>当日余额</td><td>占用保证金</td><td>交易日期</td><td>开户机构</td></td>";
+//        String s = "<td class='colorTwo' align='center' ><td>黄金编码</td><td>客户姓名</td><td>当日余额</td><td>占用保证金</td><td>交易日期</td><td>开户机构</td></td>";
         String regex = "<td(.+?)>(.+?)</td>";
 
         List<String> list = Matchers.matchAll(s, regex);
@@ -75,6 +78,15 @@ public class ValidatorTest {
         LocalDateTime dt2=LocalDateTime.now();
         Long l2 = DateHelper.toDate(dt2).getTime();
         System.out.println(l2);
+    }
+
+    @Test
+    public void test32(){
+        String left = "<(.+?)>";
+        String right = "</(.+?)>";
+
+        List<String> strings = Matchers.matchAll(s, left);
+        strings.forEach(c-> System.out.println(c));
     }
 
     private static final String telephones = "fz1\t123456\n" +

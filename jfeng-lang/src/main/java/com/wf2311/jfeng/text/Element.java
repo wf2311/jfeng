@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author admin
- * @time 2017/06/27 15:57.
+ * @author wf2311
  */
 public class Element {
     private List<Element> children;
