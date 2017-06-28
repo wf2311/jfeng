@@ -1,5 +1,6 @@
 package com.wf2311.jfeng.text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,14 +11,8 @@ public class Element {
     private List<Element> children;
     private String text;
     private Element parent;
-
-    public List<Element> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Element> children) {
-        this.children = children;
-    }
+    private Integer left;
+    private Integer right;
 
     public String getText() {
         return text;
@@ -27,11 +22,35 @@ public class Element {
         this.text = text;
     }
 
-    public Element getParent() {
-        return parent;
-    }
-
     public void setParent(Element parent) {
         this.parent = parent;
     }
+
+    public Integer getLeft() {
+        return left;
+    }
+
+    public void setLeft(Integer left) {
+        this.left = left;
+    }
+
+    public Integer getRight() {
+        return right;
+    }
+
+    public void setRight(Integer right) {
+        this.right = right;
+    }
+
+    public List<Element> getChildren() {
+        return children;
+    }
+
+    public void addElement(Element e) {
+        if (children == null) {
+            children = new ArrayList<>();
+        }
+        children.add(e);
+    }
+
 }

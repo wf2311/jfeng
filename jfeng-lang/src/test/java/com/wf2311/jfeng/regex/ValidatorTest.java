@@ -69,7 +69,7 @@ public class ValidatorTest {
 
     @Test
     public void test31(){
-        LocalDateTime dt=LocalDateTime.of(2017, 6, 26, 21, 57, 16);
+        LocalDateTime dt=LocalDateTime.of(2017, 6, 26, 0, 0, 0);
         Long l=DateHelper.toDate(dt).getTime();
         System.out.println(l);
         LocalDateTime dt2=LocalDateTime.now();
