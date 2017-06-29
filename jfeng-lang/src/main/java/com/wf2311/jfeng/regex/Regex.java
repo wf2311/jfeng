@@ -64,5 +64,25 @@ public interface Regex {
      */
     String ZIP_CODE = "[1-9]\\d{5}";
 
+    /**
+     * 匹配用户名(字母开头 + 数字/字母/下划线）)
+     */
+    String USERNAME = "[A-Za-z][A-Za-z1-9_-]+";
+
+    /**
+     * 匹配身份证号
+     */
+    String ID_CARD = "(\\d{6})(18|19|20)?(\\d{2})([01]\\d)([0123]\\d)(\\d{3})(\\d|X|x)?";
+
+    /**
+     * 匹配QQ
+     */
+    String QQ = "[1-9]\\d{4,10}";
+
+    /**
+     * 匹配URL
+     */
+    String URL = "((http|https)://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?";
+
 }
 
