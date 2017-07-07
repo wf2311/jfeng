@@ -38,7 +38,7 @@ public class ApiPageResult<T> {
     private int pageNum = 1;
 
     @ApiModelProperty(name = "符合查询条件数据总数")
-    private int total;
+    private long total;
 
     @ApiModelProperty(name = "总页数")
     private int pages;
@@ -96,13 +96,13 @@ public class ApiPageResult<T> {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
 
     public int getPages() {
-        this.pages = total / pageSize;
+        this.pages = (int) (total / pageSize);
         if (total % pageSize != 0) {
             pages++;
         }
