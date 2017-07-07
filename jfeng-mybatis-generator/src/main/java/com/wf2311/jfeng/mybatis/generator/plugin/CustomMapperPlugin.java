@@ -5,18 +5,16 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.Plugin;
 import org.mybatis.generator.api.ShellRunner;
-import org.mybatis.generator.api.dom.java.Field;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.java.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author wf2311
  */
-public class WfMapperPlugin extends MapperPlugin {
+public class CustomMapperPlugin extends MapperPlugin {
     private static Map<String, Class> annotations = new HashMap<>();
     static final String ANNOTATION_JSON_FIELD = "com.alibaba.fastjson.annotation.JSONField";
 
@@ -32,7 +30,7 @@ public class WfMapperPlugin extends MapperPlugin {
 
     public static void generate() {
 
-        String config = WfMapperPlugin.class.getClassLoader().getResource(
+        String config = CustomMapperPlugin.class.getClassLoader().getResource(
                 "generatorConfig.xml").getFile();
         String[] arg = {"-configfile", config, "-overwrite"};
         ShellRunner.main(arg);
@@ -90,13 +88,36 @@ public class WfMapperPlugin extends MapperPlugin {
 
     protected void generateToString(IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 
-//        topLevelClass.addImportedType(new FullyQualifiedJavaType("com.wf2311.commons.persist.annotation.Domain"));
-//        topLevelClass.addAnnotation("@Domain");
         topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.ToString"));
         topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.Data"));
         topLevelClass.addAnnotation("@Data");
         topLevelClass.addAnnotation("@ToString");
         topLevelClass.addImportedType(new FullyQualifiedJavaType("java.io.Serializable"));
         topLevelClass.addSuperInterface(new FullyQualifiedJavaType("java.io.Serializable"));
+        List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
+        Map<String, Field> map = new HashMap<>();
+        List<Field> fields = topLevelClass.getFields();
+        for (Field field : fields) {
+            map.put(field.getName(), field);
+        }
+        for (IntrospectedColumn column : columns) {
+            Field f = map.get(column.getJavaProperty());
+            if (f != null) {
+                if (column.getJdbcTypeName().equalsIgnoreCase("tinyint")) {
+                    if (column.getLength() == 1) {
+                        f.setType(PrimitiveTypeWrapper.getBooleanInstance());
+                        topLevelClass.addImportedType(PrimitiveTypeWrapper.getBooleanInstance());
+                    } else {
+                        f.setType(PrimitiveTypeWrapper.getIntegerInstance());
+                        topLevelClass.addImportedType(PrimitiveTypeWrapper.getIntegerInstance());
+                    }
+                }
+                resolveColumn(column, f, topLevelClass);
+
+            }
+        }
+    }
+
+    protected void resolveColumn(IntrospectedColumn column, Field f, TopLevelClass topLevelClass) {
     }
 }

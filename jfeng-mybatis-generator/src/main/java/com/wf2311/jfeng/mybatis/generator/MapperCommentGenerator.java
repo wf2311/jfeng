@@ -32,13 +32,9 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.config.MergeConstants;
 import org.mybatis.generator.internal.util.StringUtility;
-import org.springframework.format.datetime.joda.LocalDateParser;
-import org.springframework.format.datetime.joda.LocalDateTimeParser;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Date;
 import java.util.Properties;
 
 public class MapperCommentGenerator implements CommentGenerator {
@@ -164,6 +160,12 @@ public class MapperCommentGenerator implements CommentGenerator {
         if (field.isTransient()) {
             //@Column
             field.addAnnotation("@Transient");
+        }
+        for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
+            if (introspectedColumn == column) {
+                field.addAnnotation("@Id");
+                break;
+            }
         }
         String column = introspectedColumn.getActualColumnName();
         if (StringUtility.stringContainsSpace(column) || introspectedTable.getTableConfiguration().isAllColumnDelimitingEnabled()) {

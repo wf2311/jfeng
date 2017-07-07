@@ -5,7 +5,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 /**
  * @author wf2311
  */
-public class ExtFullyQualifiedJava8Type extends FullyQualifiedJavaType {
+public class Jsr310QualifiedJavaType extends FullyQualifiedJavaType {
 
     /**
      * The localDate instance.
@@ -22,7 +22,7 @@ public class ExtFullyQualifiedJava8Type extends FullyQualifiedJavaType {
      */
     private static FullyQualifiedJavaType localTimeInstance = null;
 
-    public ExtFullyQualifiedJava8Type(String fullTypeSpecification) {
+    public Jsr310QualifiedJavaType(String fullTypeSpecification) {
         super(fullTypeSpecification);
     }
 
