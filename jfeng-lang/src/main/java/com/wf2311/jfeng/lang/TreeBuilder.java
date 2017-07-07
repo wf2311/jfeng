@@ -9,13 +9,14 @@ import java.util.function.Predicate;
  *
  * @author wf2311
  */
-public class TreeBuilder<N, T> {
+public final class TreeBuilder<N, T> {
 
     private List<TreeNode<N, T>> list;
     private List<N> rootNodes;
     private Predicate<N> rootCondition;
 
 
+    @SuppressWarnings("unchecked")
     private TreeBuilder(List<N> list) {
         this.list = new ArrayList<>(list.size());
         for (N node : list) {
@@ -26,6 +27,7 @@ public class TreeBuilder<N, T> {
     /**
      * 执行构造
      */
+    @SuppressWarnings("unchecked")
     private void build0() {
         rootNodes = new ArrayList<>();
         for (TreeNode<N, T> node : list) {
@@ -34,12 +36,14 @@ public class TreeBuilder<N, T> {
             }
             for (TreeNode<N, T> n : list) {
                 if (node.getId().equals(n.getParentId())) {
+                    n.parentNode((N) node);
+                    n.setParentId(node.getParentId());
                     if (node.getChildren() == null) {
                         List<N> cs = new ArrayList<>();
                         cs.add((N) n);
                         node.setChildren(cs);
                     } else {
-                        node.getChildren().add((N) n);
+                        node.addNode((N) n);
                     }
                 }
             }
@@ -71,6 +75,7 @@ public class TreeBuilder<N, T> {
     /**
      * 判断节点是否是根节点
      */
+    @SuppressWarnings("unchecked")
     private boolean isRoot(TreeNode<N, T> node) {
         if (rootCondition != null) {
             return rootCondition.test((N) node);
@@ -109,6 +114,7 @@ public class TreeBuilder<N, T> {
     /**
      * 确保没有重复的树节点
      */
+    @SuppressWarnings("unchecked")
     private static <N, T> void assertNoRepeatId(List<N> list) {
         long count = list.stream().map(n -> {
             TreeNode<N, T> node = (TreeNode<N, T>) n;
