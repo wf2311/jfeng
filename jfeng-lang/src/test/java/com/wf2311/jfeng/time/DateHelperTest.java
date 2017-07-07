@@ -272,6 +272,19 @@ public class DateHelperTest extends TestCase {
 
     public void test_toYearMonth() {
         Assert.assertEquals("2017-04", DateHelper.toYearMonth(LocalDateTime.now()).toString());
+        Assert.assertEquals("2017-04", DateHelper.toYearMonth(LocalDateTime.now()).toString());
+    }
+
+    public void test_addDay2() {
+        LocalDate start = LocalDate.of(2017, 4, 10);
+        LocalDate end = start.plusDays(100);
+        System.out.println(DateHelper.format(end));
+    }
+
+    public void test_format() {
+        YearMonth yearMonth = YearMonth.of(2017, 7);
+        Assert.assertEquals("2017-07", DateHelper.format(yearMonth));
+        Assert.assertEquals("2017年07月", DateHelper.format(yearMonth,DateStyle.CN_YYYY_MM));
     }
 
 }

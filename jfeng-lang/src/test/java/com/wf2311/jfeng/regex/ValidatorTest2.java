@@ -1,7 +1,11 @@
 package com.wf2311.jfeng.regex;
 
+import com.google.common.io.Files;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -11,7 +15,7 @@ import java.util.List;
 public class ValidatorTest2 {
 
     @Test
-    public void testMatchEmail(){
+    public void testMatchEmail() {
         String text = "发件人: \n" +
                 "xulijie@sangame.com<xulijie@sangame.com>\n" +
                 "收件人: \n" +
@@ -27,13 +31,13 @@ public class ValidatorTest2 {
         List<String> list1 = Matchers.matchAll(text, Regex.CHINESE);
         list1.forEach(System.out::println);
 
-        List<String> list2 = Matchers.matchAll(text.replace("\n",""), Regex.SENTENCE);
+        List<String> list2 = Matchers.matchAll(text.replace("\n", ""), Regex.SENTENCE);
         list2.forEach(System.out::println);
 
     }
 
     @Test
-    public void testMatch2(){
+    public void testMatch2() {
         String text = "原标题：中国再向菲律宾伸出援手杜特尔特:有中国这样的朋友真好\n" +
                 "\n" +
                 "参考消息网6月29日报道 据英国广播公司网站6月29日报道，中国28日赠送了大量枪支给菲律宾。这批自动步枪和狙击步枪和弹药是杜特尔特上台以来从中国得到的第一批军援。其中有中国提供的具有世界先进水平的7.62毫米高精度狙击步枪。\n" +
@@ -47,9 +51,51 @@ public class ValidatorTest2 {
                 "据英国广播公司报道，中国驻菲律宾大使赵鉴华在移交这批武器时说，不久会向菲律宾提供“第二批”武器。赵鉴华大使说，这批捐赠的数量不大，但是在两国军事关系发展中具有重大意义。他说中国在反恐方面愿意探讨在联合训练，情报分享以及联合军事演习方面同菲律宾合作。\n" +
                 "\n" +
                 "另据中国驻菲律宾大使馆消息，6月27日下午，赵鉴华大使前往菲律宾总统府，代表中国政府向菲总统杜特尔特提供1500万比索人道主义捐赠，用于马拉维民众安置事宜。社会福利部部长塔圭瓦罗、卫生部副部长巴列接收了捐赠支票。菲外交部部长卡亚塔诺、总统特别助理克里斯托弗·吴、中国驻菲使馆参赞贺湘琦等在座。赵大使表示，相信在杜特尔特总统的领导下，菲律宾一定能够战胜恐怖主义，马拉维人民一定能建设更加美好的家园。杜特尔特总统表示，诚挚感谢中方的援助，这体现出中国人民对菲律宾人民的深情厚谊。";
-        List<String> list2 = Matchers.matchAll(text.replace("\n",""), Regex.SENTENCE);
+        List<String> list2 = Matchers.matchAll(text.replace("\n", ""), Regex.SENTENCE);
         list2.forEach(System.out::println);
 
+    }
+
+    @Test
+    public void testToHtml() throws IOException {
+        File file = new File("D:\\Projects\\open-source\\jfeng\\jfeng-lang\\src\\test\\resources\\larry-font.css");
+        List<String> list = Files.readLines(file, Charset.forName("utf8"));
+        System.out.println(list.size());
+        StringBuilder sb = new StringBuilder();
+        list.forEach(s -> {
+            String parse = parse(s);
+            if (parse != null) {
+                sb.append(parse);
+            }
+        });
+        System.out.println(sb.toString());
+    }
+
+    @Test
+    public void test12() {
+        String text = ".larry-jiedianguanli:before { content: \"\\e6e9\"; }";
+        System.out.println(parse(text));
+    }
+
+    public String parse(String text) {
+        if (text == null) {
+            return null;
+        }
+        if (!text.startsWith(".larry")) {
+            return null;
+        }
+        int i = text.indexOf(":before");
+        if (i < 0) {
+            return null;
+        }
+        String cls = text.substring(1, i);
+        String name = cls.substring(cls.indexOf("-") + 1);
+        String s = "<li>\n" +
+                "<i class=\"larry-icon " + cls + "\"></i>\n" +
+                "<div class=\"name\">" + name + "</div>\n" +
+//                "<div class=\"code\">" + cls + "</div>\n" +
+                "</li>";
+        return s;
     }
 
 }
