@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * 树(林)构造器
  *
@@ -14,6 +16,7 @@ public final class TreeBuilder<N, T> {
     private List<TreeNode<N, T>> list;
     private List<N> rootNodes;
     private Predicate<N> rootCondition;
+    private int order = 0;
 
 
     @SuppressWarnings("unchecked")
@@ -29,21 +32,19 @@ public final class TreeBuilder<N, T> {
      */
     @SuppressWarnings("unchecked")
     private void build0() {
-        rootNodes = new ArrayList<>();
-        for (TreeNode<N, T> node : list) {
+        this.rootNodes = new ArrayList<>();
+        for (TreeNode<N, T> node : this.list) {
             if (isRoot(node)) {
-                rootNodes.add((N) node);
+                this.rootNodes.add((N) node);
             }
-            for (TreeNode<N, T> n : list) {
+            for (TreeNode<N, T> n : this.list) {
                 if (node.getId().equals(n.getParentId())) {
-                    n.parentNode((N) node);
-                    n.setParentId(node.getParentId());
                     if (node.getChildren() == null) {
                         List<N> cs = new ArrayList<>();
                         cs.add((N) n);
                         node.setChildren(cs);
                     } else {
-                        node.addNode((N) n);
+                        node.getChildren().add((N) n);
                     }
                 }
             }
@@ -55,7 +56,20 @@ public final class TreeBuilder<N, T> {
      */
     public List<N> build() {
         build0();
-        return rootNodes;
+        if (this.order == TreeNode.SORT_DESC || order == TreeNode.SORT_ASC) {
+            sort();
+        }
+        return this.rootNodes;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void sort() {
+        if (this.rootNodes == null || this.rootNodes.isEmpty()) {
+            return;
+        }
+        this.rootNodes = this.rootNodes.stream().sorted((n1, n2) -> compare(((TreeNode<N, T>) n1).getSequence(), ((TreeNode<N, T>) n2).getSequence(), this.order))
+                .collect(toList());
+        this.rootNodes.forEach(node -> ((TreeNode<N, T>) node).sort(order));
     }
 
     /**
@@ -77,8 +91,8 @@ public final class TreeBuilder<N, T> {
      */
     @SuppressWarnings("unchecked")
     private boolean isRoot(TreeNode<N, T> node) {
-        if (rootCondition != null) {
-            return rootCondition.test((N) node);
+        if (this.rootCondition != null) {
+            return this.rootCondition.test((N) node);
         }
         T type = node.getParentId();
         return type == null || type instanceof Number && ((Number) type).intValue() == 0;
@@ -94,6 +108,16 @@ public final class TreeBuilder<N, T> {
     public static <N, T> TreeBuilder<N, T> of(List<N> list) {
         assertIsTree(list);
         return new TreeBuilder<>(list);
+    }
+
+    public TreeBuilder<N, T> asc() {
+        this.order = TreeNode.SORT_ASC;
+        return this;
+    }
+
+    public TreeBuilder<N, T> desc() {
+        this.order = TreeNode.SORT_DESC;
+        return this;
     }
 
     /**
@@ -123,6 +147,42 @@ public final class TreeBuilder<N, T> {
         if (count < list.size()) {
             throw new IllegalArgumentException("存在重复的树节点");
         }
+    }
+
+    /**
+     * 比较两个<code>Integer</code>，规则如下：
+     * <p>
+     * 当order=1时，<code>null</code>总小于其他值；
+     * 当order=-1时，<code>null</code>总小于其他值；
+     * </p>
+     * <pre>
+     * Assert.assertEquals(-1, TreeBuilder.compare(1, 2, 1));
+     * Assert.assertEquals(1, TreeBuilder.compare(1, 2, -1));
+     * Assert.assertEquals(-1, TreeBuilder.compare(1, null, -1));
+     * Assert.assertEquals(-1, TreeBuilder.compare(1, null, 1));
+     * Assert.assertEquals(0, TreeBuilder.compare(null, null, -1));
+     * Assert.assertEquals(0, TreeBuilder.compare(null, null, 1));
+     * Assert.assertEquals(1, TreeBuilder.compare(null, 1, -1));
+     * Assert.assertEquals(1, TreeBuilder.compare(null, 1, 1));
+     * </pre>
+     *
+     * @param order
+     * @return
+     */
+    public static int compare(Integer a, Integer b, int order) {
+        if (order != TreeNode.SORT_DESC && order != TreeNode.SORT_ASC) {
+            return 0;
+        }
+        if (a == null && b == null) {
+            return 0;
+        }
+        if (a == null) {
+            return 1;
+        }
+        if (b == null) {
+            return -1;
+        }
+        return Integer.compare(a, b) * order;
     }
 
 }

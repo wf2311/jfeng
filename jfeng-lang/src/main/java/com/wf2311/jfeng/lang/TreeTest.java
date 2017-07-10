@@ -54,6 +54,11 @@ public class TreeTest extends TreeNode<TreeTest, Integer> {
         this.children = children;
     }
 
+    @Override
+    public Integer getSequence() {
+        return null;
+    }
+
 
     @Override
     public String toString() {
