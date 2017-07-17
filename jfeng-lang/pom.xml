@@ -11,7 +11,9 @@
 
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng-lang</artifactId>
-    <version>0.0.2.1</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -70,6 +72,11 @@
             <artifactId>lombok</artifactId>
             <version>1.16.16</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wf2311</groupId>
+            <artifactId>jfeng-datetime</artifactId>
+            <version>0.1.0</version>
         </dependency>
     </dependencies>
 

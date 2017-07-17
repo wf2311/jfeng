@@ -2,7 +2,6 @@ package com.wf2311.jfeng.lang;
 
 import com.wf2311.jfeng.regex.Regex;
 import com.wf2311.jfeng.time.DateStyle;
-import com.wf2311.jfeng.time.TimeConsts;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import strman.Strman;
@@ -76,12 +75,7 @@ public class RegexTest extends TestCase {
         System.out.println(matches);
     }
 
-    public void test12() {
-        TimeConsts.map.forEach((k,v)-> show(k.strictRegex(),v));
-    }
-
     public void show(String regex, String text) {
-//        System.out.println(regex + "\t" + text);
         Matcher matcher = Pattern.compile(regex).matcher(text);
         if (matcher.find()) {
             for (int i = 0; i <= matcher.groupCount(); i++) {
