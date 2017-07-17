@@ -22,9 +22,12 @@ public class TreeNodeTest extends TestCase {
         System.out.println(list.size());
         List<SysMenuDto> build = TreeBuilder.of(list).rootCondition(d -> d.getParentId() == null).asc().build();
         System.out.println(JSON.toJSONString(build));
+        StringBuffer sb = new StringBuffer();
+        build.forEach(n -> sb.append(n.toHtml()));
+        System.out.println(sb.toString());
     }
 
-    public void test2(){
+    public void test2() {
         Integer a = null;
         Integer b = 1;
         int compare = Integer.compare(a, b);

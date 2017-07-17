@@ -5,13 +5,13 @@
     <parent>
         <artifactId>jfeng</artifactId>
         <groupId>com.wf2311</groupId>
-        <version>0.0.2</version>
+        <version>0.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng-repository</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
     <dependencies>
         <dependency>
             <groupId>org.aspectj</groupId>

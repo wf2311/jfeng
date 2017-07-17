@@ -7,15 +7,12 @@
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.2</version>
+    <version>0.1.0</version>
     <modules>
-        <!--<module>jfeng-commons-test</module>-->
-        <!--<module>jfeng-test-api</module>-->
-        <!--<module>jfeng-test-jfinal-api</module>-->
         <module>jfeng-lang</module>
         <module>jfeng-repository</module>
-        <module>jfeng-tuple</module>
         <module>jfeng-mybatis-generator</module>
+        <module>jfeng-datetime</module>
     </modules>
 
     <properties>

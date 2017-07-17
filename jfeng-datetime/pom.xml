@@ -9,20 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wf2311</groupId>
-    <artifactId>jfeng-mybatis-generator</artifactId>
-    <version>0.1.0</version>
-
+    <artifactId>jfeng-datetime</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.wf2311</groupId>
-            <artifactId>jfeng-repository</artifactId>
-            <version>0.1.0</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-            <version>1.3.5</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
