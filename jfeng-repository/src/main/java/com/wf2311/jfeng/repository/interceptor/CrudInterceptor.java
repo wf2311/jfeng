@@ -1,10 +1,10 @@
-package com.wf2311.repository.interceptor;
+package com.wf2311.jfeng.repository.interceptor;
 
 import com.wf2311.jfeng.id.IdCreator;
 import com.wf2311.jfeng.reflect.ReflectUtils;
-import com.wf2311.repository.annoation.*;
-import com.wf2311.repository.consts.Constants;
-import com.wf2311.repository.entity.BaseUser;
+import com.wf2311.jfeng.repository.annoation.*;
+import com.wf2311.jfeng.repository.consts.Constants;
+import com.wf2311.jfeng.repository.entity.BaseUser;
 import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

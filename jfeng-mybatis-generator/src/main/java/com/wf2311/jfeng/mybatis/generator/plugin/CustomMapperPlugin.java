@@ -1,6 +1,6 @@
 package com.wf2311.jfeng.mybatis.generator.plugin;
 
-import com.wf2311.repository.annoation.*;
+import com.wf2311.jfeng.repository.annoation.*;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.Plugin;

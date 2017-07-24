@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jfeng</artifactId>
         <groupId>com.wf2311</groupId>
-        <version>0.1.0</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,8 +17,10 @@
     <dependencies>
         <dependency>
             <groupId>com.wf2311</groupId>
-            <artifactId>jfeng-repository</artifactId>
-            <version>0.1.0</version>
+            <artifactId>jfeng-repository-annoation</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.mybatis.generator</groupId>

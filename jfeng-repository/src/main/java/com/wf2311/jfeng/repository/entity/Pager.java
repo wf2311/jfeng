@@ -1,4 +1,4 @@
-package com.wf2311.repository.entity;
+package com.wf2311.jfeng.repository.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

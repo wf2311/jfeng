@@ -1,4 +1,4 @@
-package com.wf2311.repository.consts;
+package com.wf2311.jfeng.repository.consts;
 
 /**
  * @author wf2311
