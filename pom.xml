@@ -7,7 +7,7 @@
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.2</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Java工具包</description>
     <url>https://github.com/wf2311/jfeng</url>

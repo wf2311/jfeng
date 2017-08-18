@@ -63,6 +63,14 @@ public class CollectionUtilsTest {
 
     }
 
+    @Test
+    public void testNull(){
+        List<Integer> list = new ArrayList<>();
+        List<Integer> list2 = null;
+        Assert.assertEquals(true,CollectionUtils.isEmpty(list));
+        Assert.assertEquals(true,CollectionUtils.isEmpty(list2));
+    }
+
     class A {
         private int key;
         private int value;
