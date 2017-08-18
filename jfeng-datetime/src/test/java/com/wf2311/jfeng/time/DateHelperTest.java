@@ -284,7 +284,11 @@ public class DateHelperTest extends TestCase {
     public void test_format() {
         YearMonth yearMonth = YearMonth.of(2017, 7);
         Assert.assertEquals("2017-07", DateHelper.format(yearMonth));
-        Assert.assertEquals("2017年07月", DateHelper.format(yearMonth,DateStyle.CN_YYYY_MM));
+        Assert.assertEquals("2017年07月", DateHelper.format(yearMonth, DateStyle.CN_YYYY_MM));
+    }
+
+    public void test_timestamp() {
+        System.out.println(DateHelper.timestamp());
     }
 
 }

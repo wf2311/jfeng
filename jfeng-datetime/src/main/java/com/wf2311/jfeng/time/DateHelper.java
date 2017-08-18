@@ -739,12 +739,32 @@ public final class DateHelper {
     //======================================other 开始===================================
 
 
-    public static long unixTimestamp(LocalDateTime time) {
-        return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
+    /**
+     * 将时间转为时间戳(毫秒)
+     */
+    public static long toTimestamp(LocalDateTime time) {
+        return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
-    public static long currentUnixTimestamp() {
-        return LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
+    /**
+     * 获取当前时间的时间戳(毫秒)
+     */
+    public static long timestamp() {
+        return toTimestamp(LocalDateTime.now());
+    }
+
+    /**
+     * 将时间转为时间戳(秒)
+     */
+    public static long toUnixTimestamp(LocalDateTime time) {
+        return toTimestamp(time) / 1000;
+    }
+
+    /**
+     * 获取当前时间的时间戳(秒)
+     */
+    public static long unixTimestamp() {
+        return timestamp() / 1000;
     }
 
     //======================================other 结束===================================
