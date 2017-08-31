@@ -575,6 +575,20 @@ public final class DateHelper {
     }
 
     /**
+     * 所在日期的当天开始时刻
+     */
+    public static LocalDateTime startOfDay(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().atStartOfDay();
+    }
+
+    /**
+     * 所在日期的结束开始时刻
+     */
+    public static LocalDateTime endOfDay(LocalDateTime dateTime) {
+        return dateTime.toLocalDate().plusDays(1).atStartOfDay().minusNanos(1);
+    }
+
+    /**
      * 所在日期的当周的第几天
      */
     public static LocalDateTime dayOfWeek(LocalDateTime dateTime, int dayOfWeek) {
