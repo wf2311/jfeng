@@ -69,6 +69,7 @@ public class CollectionUtilsTest {
         List<Integer> list = CollectionUtils.getGroupFeatureList(getUsers(), User::getAge, (o1, o2) -> -Integer.compare(o1, o2));
         Assert.assertEquals(Arrays.asList(29, 26, 25, 23, 22, 21, 20, 19, 18, 17, 16, null), list);
     }
+
     @Test
     public void getMapGroupByFeature3() throws Exception {
         Map<Integer, List<User>> map = CollectionUtils.getMapGroupByFeature(getUsers(), User::getAge);
@@ -77,7 +78,7 @@ public class CollectionUtilsTest {
 
     @Test
     public void test_getSubListByGroupFeature() {
-        List<User> list = CollectionUtils.getSubListByGroupFeature(getUsers(), User::getAge, true);
+        List<User> list = CollectionUtils.getFirstSubListByGroupFeature(getUsers(), User::getAge, true);
         Assert.assertEquals(1, list.size());
         Assert.assertEquals(new Integer(16), list.get(0).getAge());
         Assert.assertEquals("dg", list.get(0).getName());
@@ -144,6 +145,7 @@ public class CollectionUtilsTest {
         Assert.assertEquals(true, CollectionUtils.isEmpty(list2));
     }
 
+    @Data
     class A {
         private int key;
         private int value;
@@ -160,6 +162,26 @@ public class CollectionUtilsTest {
         int getValue() {
             return value;
         }
+    }
+
+    @Test
+    public void testList() {
+        List<A> list = new ArrayList<>();
+        list.add(new A(1, 1));
+        list.add(new A(2, 1));
+        list.add(new A(3, 1));
+        list.add(new A(4, 1));
+        list.add(new A(5, 1));
+        list.add(new A(6, 1));
+
+
+        List<A> l1 = new ArrayList<>(list);
+        List<A> l2 = new ArrayList<>(list);
+        l1.remove(1);
+        System.out.println(list.size());
+        System.out.println(l1.size());
+        System.out.println(l2.size());
+
     }
 
 }

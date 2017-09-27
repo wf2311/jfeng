@@ -8,6 +8,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 /**
  * @author wf2311
  */
+@Deprecated
 public class Jsr310MapperPlugin extends CustomMapperPlugin {
 
     @Override

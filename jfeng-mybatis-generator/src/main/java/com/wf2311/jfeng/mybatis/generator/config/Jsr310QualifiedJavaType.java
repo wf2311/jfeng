@@ -5,6 +5,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 /**
  * @author wf2311
  */
+@Deprecated
 public class Jsr310QualifiedJavaType extends FullyQualifiedJavaType {
 
     /**

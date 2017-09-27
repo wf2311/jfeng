@@ -46,7 +46,7 @@ import java.util.Set;
  *
  * @author liuzh
  */
-public class MapperPlugin extends PluginAdapter {
+public abstract class MapperPlugin extends PluginAdapter {
 
     private String supClass = "";
     private Set<String> mappers = new HashSet<String>();
@@ -59,6 +59,10 @@ public class MapperPlugin extends PluginAdapter {
     private String schema;
     //注释生成器
     private CommentGeneratorConfiguration commentCfg;
+    /**
+     * 是否使用lombok
+     */
+    protected boolean useLombok = true;
 
     @Override
     public void setContext(Context context) {
@@ -84,12 +88,16 @@ public class MapperPlugin extends PluginAdapter {
             throw new RuntimeException("Mapper插件缺少必要的mappers属性!");
         }
         String supClass = this.properties.getProperty("superClass");
-        if (StringUtility.stringHasValue(supClass)){
+        if (StringUtility.stringHasValue(supClass)) {
             this.supClass = supClass;
         }
         String caseSensitive = this.properties.getProperty("caseSensitive");
         if (StringUtility.stringHasValue(caseSensitive)) {
             this.caseSensitive = caseSensitive.equalsIgnoreCase("TRUE");
+        }
+        String useLombok = this.properties.getProperty("useLombok");
+        if (StringUtility.stringHasValue(useLombok)) {
+            this.useLombok = useLombok.equalsIgnoreCase("TRUE");
         }
         String beginningDelimiter = this.properties.getProperty("beginningDelimiter");
         if (StringUtility.stringHasValue(beginningDelimiter)) {

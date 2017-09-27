@@ -64,7 +64,7 @@ public class CustomMapperPlugin extends MapperPlugin {
                                               TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
                                               IntrospectedTable introspectedTable,
                                               Plugin.ModelClassType modelClassType) {
-        return false;
+        return !useLombok;
     }
 
     @Override
@@ -72,16 +72,18 @@ public class CustomMapperPlugin extends MapperPlugin {
                                               TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
                                               IntrospectedTable introspectedTable,
                                               Plugin.ModelClassType modelClassType) {
-        return false;
+        return !useLombok;
     }
 
 
     protected void generateToString(IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 
-        topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.ToString"));
-        topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.Data"));
-        topLevelClass.addAnnotation("@Data");
-        topLevelClass.addAnnotation("@ToString");
+        if (useLombok) {
+            topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.ToString"));
+            topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.Data"));
+            topLevelClass.addAnnotation("@Data");
+            topLevelClass.addAnnotation("@ToString");
+        }
         topLevelClass.addImportedType(new FullyQualifiedJavaType("java.io.Serializable"));
         topLevelClass.addSuperInterface(new FullyQualifiedJavaType("java.io.Serializable"));
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();

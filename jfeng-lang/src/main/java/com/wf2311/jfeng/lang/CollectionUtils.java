@@ -123,7 +123,7 @@ public final class CollectionUtils {
     /**
      * 按照特征条件排序，得到列表中满足指定条件的第一个子列表
      */
-    public static <K, T> List<T> getSubListByGroupFeature(List<T> list, Function<T, K> groupFeature, boolean asc) {
+    public static <K, T> List<T> getFirstSubListByGroupFeature(List<T> list, Function<T, K> groupFeature, boolean asc) {
         List<K> keys = getGroupFeatureList(list, groupFeature);
         K k;
         if (asc) {
