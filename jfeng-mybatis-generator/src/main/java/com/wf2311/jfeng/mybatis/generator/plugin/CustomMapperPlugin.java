@@ -1,6 +1,5 @@
 package com.wf2311.jfeng.mybatis.generator.plugin;
 
-import com.wf2311.jfeng.repository.annoation.*;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.Plugin;
@@ -15,18 +14,9 @@ import java.util.Map;
  * @author wf2311
  */
 public class CustomMapperPlugin extends MapperPlugin {
-    private static Map<String, Class> annotations = new HashMap<>();
+    protected static Map<String, Class> annotations = new HashMap<>();
     static final String ANNOTATION_JSON_FIELD = "com.alibaba.fastjson.annotation.JSONField";
 
-    static {
-        annotations.put("@Primary", Primary.class);
-        annotations.put("@Creator", Creator.class);
-        annotations.put("@CreatedTime", CreatedTime.class);
-        annotations.put("@Modifier", Modifier.class);
-        annotations.put("@ModifiedTime", ModifiedTime.class);
-        annotations.put("@AutoIncrement", AutoIncrement.class);
-        annotations.put("@Unique", Unique.class);
-    }
 
     public static void generate() {
 
@@ -74,7 +64,7 @@ public class CustomMapperPlugin extends MapperPlugin {
                                               TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
                                               IntrospectedTable introspectedTable,
                                               Plugin.ModelClassType modelClassType) {
-        return false;
+        return !useLombok;
     }
 
     @Override
@@ -82,16 +72,18 @@ public class CustomMapperPlugin extends MapperPlugin {
                                               TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
                                               IntrospectedTable introspectedTable,
                                               Plugin.ModelClassType modelClassType) {
-        return false;
+        return !useLombok;
     }
 
 
     protected void generateToString(IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 
-        topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.ToString"));
-        topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.Data"));
-        topLevelClass.addAnnotation("@Data");
-        topLevelClass.addAnnotation("@ToString");
+        if (useLombok) {
+            topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.ToString"));
+            topLevelClass.addImportedType(new FullyQualifiedJavaType("lombok.Data"));
+            topLevelClass.addAnnotation("@Data");
+            topLevelClass.addAnnotation("@ToString");
+        }
         topLevelClass.addImportedType(new FullyQualifiedJavaType("java.io.Serializable"));
         topLevelClass.addSuperInterface(new FullyQualifiedJavaType("java.io.Serializable"));
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();

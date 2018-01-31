@@ -7,7 +7,7 @@
     <groupId>com.wf2311</groupId>
     <artifactId>jfeng</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.1</version>
+    <version>0.1.3</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Java工具包</description>
     <url>https://github.com/wf2311/jfeng</url>
@@ -17,12 +17,13 @@
         <module>jfeng-mybatis-generator</module>
         <module>jfeng-datetime</module>
         <module>jfeng-repository-annoation</module>
+        <module>jfeng-repository-sql-aspect</module>
     </modules>
 
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>http://www.apache.org/licenses/3LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -144,20 +145,20 @@
             <!--</plugin>-->
 
             <!--GPG自动签名的插件-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-gpg-plugin</artifactId>-->
-                <!--<version>1.6</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>sign-artifacts</id>-->
-                        <!--<phase>verify</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>sign</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
