@@ -2,7 +2,7 @@ package com.wf2311.jfeng;
 
 import com.alibaba.fastjson.JSON;
 import com.wf2311.jfeng.exception.CustomException;
-import com.wf2311.jfeng.lang.CollectionUtils;
+import com.wf2311.jfeng.utils.CollectionUtils;
 import lombok.Data;
 import org.junit.Test;
 

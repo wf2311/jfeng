@@ -2,6 +2,7 @@ package com.wf2311.jfeng.lang;
 
 import com.alibaba.fastjson.JSON;
 import com.wf2311.jfeng.lang.random.RandomUtil;
+import com.wf2311.jfeng.utils.CollectionUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.Assert;

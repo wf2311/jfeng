@@ -1,4 +1,6 @@
-package com.wf2311.jfeng.lang;
+package com.wf2311.jfeng.utils;
+
+import com.wf2311.jfeng.lang.StreamUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -148,17 +148,4 @@ public class IdCreator {
     protected long timeGen() {
         return System.currentTimeMillis();
     }
-
-    public static void main(String[] args) {
-        IdCreator idCreator = new IdCreator(1, 2);
-        IdCreator idCreator1 = new IdCreator(2, 2);
-        //6147679592191889408
-        //3103501304962752517
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(idCreator.nextId());
-            System.out.println(idCreator1.nextId());
-        }
-
-        System.out.println(LocalDate.of(2017,1,1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-    }
 }
