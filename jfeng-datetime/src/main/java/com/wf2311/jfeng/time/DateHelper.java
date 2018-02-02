@@ -4,10 +4,7 @@ package com.wf2311.jfeng.time;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -33,6 +30,11 @@ public final class DateHelper {
      * 默认转换格式
      */
     public static final DateTimeFormatter DEFAULT_FORMATTER = formatter(DEFAULT_FORMATTER_STYLE);
+
+    /**
+     * 时区
+     */
+    private static final Locale LOCALE = Locale.CHINA;
 
     private DateHelper() {
     }
@@ -559,33 +561,61 @@ public final class DateHelper {
         return startOfMonth(dateTime).plusMonths(1).minusNanos(1);
     }
 
+
     /**
-     * 所在日期的当周开始时刻(星期一)
+     * 所在日期当周的某天相同时刻
      */
-    public static LocalDateTime startOfWeek(LocalDateTime dateTime) {
-        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
-        return dateTime.minusDays((long) dayOfWeek.getValue() - 1).toLocalDate().atStartOfDay();
+    public static LocalDateTime timeOfWeek(LocalDateTime time, DayOfWeek dayOfWeek) {
+        return time.with(dayOfWeek);
     }
 
     /**
-     * 所在日期的当周开始时刻(星期一)
+     * 当周的开始时刻
      */
-    public static LocalDateTime endOfWeek(LocalDateTime dateTime) {
-        return startOfWeek(dateTime).minusNanos(1);
+    public static LocalDateTime startOfWeek(LocalDateTime time) {
+        return timeOfWeek(time, DayOfWeek.MONDAY).with(LocalTime.MIN);
+    }
+
+    /**
+     * 当周的结束时刻
+     */
+    public static LocalDateTime endOfWeek(LocalDateTime time) {
+        return timeOfWeek(time, DayOfWeek.SUNDAY).with(LocalTime.MAX);
+    }
+
+    /**
+     * 所在日期当周的某天
+     */
+    public static LocalDate dayOfWeek(LocalDate day, DayOfWeek dayOfWeek) {
+        return day.with(dayOfWeek);
+    }
+
+    /**
+     * 当周的第一天(周一)
+     */
+    public static LocalDate startDayOfWeek(LocalDate day) {
+        return dayOfWeek(day, DayOfWeek.MONDAY);
+    }
+
+    /**
+     * 当周的最后一天(周日)
+     */
+    public static LocalDate endDayOfWeek(LocalDate day) {
+        return dayOfWeek(day, DayOfWeek.SUNDAY);
     }
 
     /**
      * 所在日期的当天开始时刻
      */
     public static LocalDateTime startOfDay(LocalDateTime dateTime) {
-        return dateTime.toLocalDate().atStartOfDay();
+        return dateTime.with(LocalTime.MIN);
     }
 
     /**
      * 所在日期的结束开始时刻
      */
     public static LocalDateTime endOfDay(LocalDateTime dateTime) {
-        return dateTime.toLocalDate().plusDays(1).atStartOfDay().minusNanos(1);
+        return dateTime.with(LocalTime.MAX);
     }
 
     /**
@@ -618,15 +648,6 @@ public final class DateHelper {
         return date.plusDays((long) (dayOfWeek - date.getDayOfWeek().getValue()));
     }
 
-    /**
-     * 所在日期的当周的第几天
-     */
-    public static LocalDate dayOfWeek(LocalDate date, DayOfWeek dayOfWeek) {
-        if (dayOfWeek == null) {
-            throw new NullPointerException();
-        }
-        return date.plusDays((long) (dayOfWeek.getValue() - date.getDayOfWeek().getValue()));
-    }
     //======================================时间变更 结束===================================
 
 
