@@ -1,7 +1,7 @@
 package com.wf2311.jfeng;
 
 import com.alibaba.fastjson.JSON;
-import com.wf2311.jfeng.exception.WfException;
+import com.wf2311.jfeng.exception.CustomException;
 import com.wf2311.jfeng.lang.CollectionUtils;
 import lombok.Data;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class ShiJiTest {
         for (List<Agentia> mix : lists) {
             if (isPoisonous(mix)) {
                 if (miceNum == 0) {
-                    throw new WfException("小白鼠已全部死亡，未能找出毒药！");
+                    throw new CustomException("小白鼠已全部死亡，未能找出毒药！");
                 }
                 miceNum--;
 //                System.out.println(String.format("确定毒药在%d到第%d瓶之间，此时还剩余小白鼠数量：%d", mix.get(0).getId(), mix.get(mix.size() - 1).getId(), miceNum));
@@ -84,7 +84,7 @@ public class ShiJiTest {
                 return detect(mix, miceNum);
             }
         }
-        throw new WfException("未能找出毒药！");
+        throw new CustomException("未能找出毒药！");
     }
 
     @Test
