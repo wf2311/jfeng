@@ -43,7 +43,7 @@ public final class StreamUtils {
      * </pre>
      */
     public static <T> Predicate<T> distinctByFunction(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>(16);
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

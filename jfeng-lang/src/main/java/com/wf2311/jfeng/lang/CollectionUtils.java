@@ -1,20 +1,14 @@
 package com.wf2311.jfeng.lang;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -141,36 +135,34 @@ public final class CollectionUtils {
         return getSubListByGroupFeature(list, groupFeature, k);
     }
 
-    /**
-     * List类型转换
-     * <pre>
-     *     List<Integer> integerList = convertList(Arrays.asList("1","2","3"), s -> Integer.parseInt(s));
-     * </pre>
-     *
-     * @param source 源list
-     * @param func   转换函数
-     * @param <T>    源list类型
-     * @param <U>    目标list类型
-     */
-    public static <T, U> List<U> convertList(List<T> source, Function<T, U> func) {
-        return source.stream().map(func).collect(toList());
+    public static long factorial(int n) {
+        if (n > 20 || n < 0) {
+            throw new IllegalArgumentException(n + " is out of range");
+        }
+        return LongStream.rangeClosed(2, n).reduce(1, (a, b) -> a * b);
     }
 
-    /**
-     * List转换为数组
-     * <pre>
-     *   Double[] doubleArr = convertArray(Arrays.asList("1","2","3"), Double::parseDouble, Double[]::new);
-     * </pre>
-     *
-     * @param source    源list
-     * @param func      转换函数
-     * @param generator 函数：产生一个数组
-     * @param <T>       源list类型
-     * @param <U>       目标list类型
-     * @return
-     */
-    public static <T, U> U[] convertArray(T[] source, Function<T, U> func, IntFunction<U[]> generator) {
-        return Arrays.stream(source).map(func).toArray(generator);
+    public static <T> List<T> permutation(long no, List<T> items) {
+        return permutationHelper(no,
+                new LinkedList<>(Objects.requireNonNull(items)),
+                new ArrayList<>());
+    }
+
+    private static <T> List<T> permutationHelper(long no, LinkedList<T> in, List<T> out) {
+        if (in.isEmpty()) {
+            return out;
+        }
+        long subFactorial = factorial(in.size() - 1);
+        out.add(in.remove((int) (no / subFactorial)));
+        return permutationHelper((int) (no % subFactorial), in, out);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings("varargs") // Creating a List from an array is safe
+    public static <T> Stream<Stream<T>> of(T... items) {
+        List<T> itemList = Arrays.asList(items);
+        return LongStream.range(0, factorial(items.length))
+                .mapToObj(no -> permutation(no, itemList).stream());
     }
 
 }

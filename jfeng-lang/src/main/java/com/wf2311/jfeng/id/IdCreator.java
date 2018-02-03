@@ -79,7 +79,8 @@ public class IdCreator {
      * 时间毫秒左移22位
      */
     private long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
-    private long sequenceMask = ~(-1L << sequenceBits);//-1L ^ (-1L << sequenceBits)
+    //-1L ^ (-1L << sequenceBits)
+    private long sequenceMask = ~(-1L << sequenceBits);
     private long lastTimestamp = -1L;
 
     public IdCreator(){
