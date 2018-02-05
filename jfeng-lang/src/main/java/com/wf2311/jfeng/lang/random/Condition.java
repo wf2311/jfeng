@@ -49,20 +49,20 @@ public class Condition {
         this.value = value;
     }
 
-    public Condition with(double rate, double start, double end) {
+    public static Condition with(double rate, double start, double end) {
         return new Condition(rate, start, end);
     }
 
-    public Condition with(double rate, double value) {
+    public static Condition with(double rate, double value) {
         return new Condition(rate, value, value);
     }
 
-    public Condition with(double rate, int value) {
+    public static Condition with(double rate, int value) {
         return new Condition(rate, (double) value, (double) value);
     }
 
 
-    public Condition with(double rate, String value) {
+    public static Condition with(double rate, String value) {
         return new Condition(rate, value);
     }
 

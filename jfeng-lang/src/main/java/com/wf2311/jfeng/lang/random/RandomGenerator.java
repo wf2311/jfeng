@@ -28,6 +28,10 @@ public class RandomGenerator {
     private Random random = new Random();
     private boolean updated = false;
 
+    public static RandomGenerator create(){
+        return new RandomGenerator();
+    }
+
     /**
      * 新增条件
      *
@@ -47,7 +51,7 @@ public class RandomGenerator {
      * @param conditions
      * @return
      */
-    public RandomGenerator addConditons(List<Condition> conditions) {
+    public RandomGenerator addConditions(List<Condition> conditions) {
         ensureConditionsIsNotNull();
         this.conditions.addAll(conditions);
         updated = true;
@@ -60,7 +64,7 @@ public class RandomGenerator {
      * @param conditions
      * @return
      */
-    public RandomGenerator setConditons(List<Condition> conditions) {
+    public RandomGenerator setConditions(List<Condition> conditions) {
         this.conditions = conditions;
         updated = true;
         return this;
@@ -124,7 +128,7 @@ public class RandomGenerator {
 
 
     private Condition getSection(double d) {
-        double k = DoubleStream.of(keys).filter(key -> key >= d).findFirst().getAsDouble();
+        double k = DoubleStream.of(keys).filter(key -> key >= d).findFirst().orElseThrow(IllegalArgumentException::new);
         return map.get(k);
     }
 
