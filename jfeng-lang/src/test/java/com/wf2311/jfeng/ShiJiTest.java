@@ -3,7 +3,6 @@ package com.wf2311.jfeng;
 import com.alibaba.fastjson.JSON;
 import com.wf2311.jfeng.exception.CustomException;
 import com.wf2311.jfeng.utils.CollectionUtils;
-import lombok.Data;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -16,7 +15,6 @@ import java.util.stream.IntStream;
  */
 public class ShiJiTest {
 
-    @Data
     class Agentia {
         /**
          * 序号
@@ -26,6 +24,22 @@ public class ShiJiTest {
          * 是否是毒药
          */
         boolean isPoison = false;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public boolean isPoison() {
+            return isPoison;
+        }
+
+        public void setPoison(boolean poison) {
+            isPoison = poison;
+        }
     }
 
     /**

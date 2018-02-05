@@ -2,6 +2,7 @@ package com.wf2311.jfeng.lang.random;
 
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.wf2311.jfeng.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.stream.DoubleStream;
 import static java.util.function.Function.identity;
 
 /**
+ * 随机数生成器
  *
  * @author wangfeng
- * @time 2017/04/07 13:23.
  */
 public class RandomGenerator {
 
@@ -25,21 +26,43 @@ public class RandomGenerator {
     private Map<Double, Condition> map;
     private Double maxRate;
     private Random random = new Random();
+    private boolean updated = false;
 
+    /**
+     * 新增条件
+     *
+     * @param condition
+     * @return
+     */
     public RandomGenerator addCondition(Condition condition) {
         ensureConditionsIsNotNull();
         conditions.add(condition);
+        updated = true;
         return this;
     }
 
+    /**
+     * 批量新增条件
+     *
+     * @param conditions
+     * @return
+     */
     public RandomGenerator addConditons(List<Condition> conditions) {
         ensureConditionsIsNotNull();
         this.conditions.addAll(conditions);
+        updated = true;
         return this;
     }
 
+    /**
+     * 设置条件
+     *
+     * @param conditions
+     * @return
+     */
     public RandomGenerator setConditons(List<Condition> conditions) {
         this.conditions = conditions;
+        updated = true;
         return this;
     }
 
@@ -50,38 +73,40 @@ public class RandomGenerator {
     }
 
     private void init() {
-        if (conditions == null || conditions.size() == 0) {
-            throw new RuntimeException("有效条件为空！");
+        if (CollectionUtils.isEmpty(conditions)) {
+            throw new IllegalStateException("有效条件为空！");
         }
-
-        map = toMap(conditions);
-        keys = map.keySet().stream().mapToDouble(key -> key).sorted().toArray();
-        maxRate = keys[keys.length - 1];
+        if (updated) {
+            map = toMap(conditions);
+            keys = map.keySet().stream().mapToDouble(key -> key).sorted().toArray();
+            maxRate = keys[keys.length - 1];
+            updated = false;
+        }
     }
 
-    private double _get() {
+    private double get0() {
         init();
-        double _section = random(0, maxRate);
-        Condition condition = getSection(_section);
+        double section0 = random(0, maxRate);
+        Condition condition = getSection(section0);
         return random(condition.start, condition.end);
     }
 
     public double getDouble() {
-        return _get();
+        return get0();
     }
 
     public int getInt() {
-        return (int) _get();
+        return (int) get0();
     }
 
-    public long getLong(){
-        return (long) _get();
+    public long getLong() {
+        return (long) get0();
     }
 
-    public String getString(){
+    public String getString() {
         init();
-        double _section = random(0, maxRate);
-        Condition condition = getSection(_section);
+        double section0 = random(0, maxRate);
+        Condition condition = getSection(section0);
         return condition.value;
     }
 
@@ -107,8 +132,7 @@ public class RandomGenerator {
         if (start >= end) {
             return start;
         }
-        double d= random.doubles(1, start, end).toArray()[0];
-        return d;
+        return random.doubles(1, start, end).toArray()[0];
     }
 
 }
