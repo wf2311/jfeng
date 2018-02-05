@@ -2,6 +2,7 @@ package com.wf2311.jfeng.id;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.logging.Logger;
 
 /**
  * ID 生成策略
@@ -38,14 +39,13 @@ import java.time.ZoneId;
  * @date 2016/01/14 9:39
  */
 public class IdCreator {
-//    protected static final Logger logger = Logger.getLogger(IdCreator.class);
+    protected static final Logger logger = Logger.getLogger(IdCreator.class.getName());
 
     private long workerId;
     private long dataCenterId;
     private long sequence = 0L;
 
-    private long twePoCh = 1491707634060L;//1288834974657L;
-//    private long twePoCh = 0L;//1288834974657L;
+    private long twePoCh = 1491707634060L;
 
     /**
      * 机器标识位数
@@ -57,12 +57,14 @@ public class IdCreator {
     private long dataCenterIdBits = 5L;
     /**
      * 机器ID最大值
+     * -1L ^ (-1L << workerIdBits)
      */
-    private long maxWorkerId = ~(-1L << workerIdBits);//-1L ^ (-1L << workerIdBits)
+    private long maxWorkerId = ~(-1L << workerIdBits);
     /**
      * 数据中心ID最大值
+     * -1L ^ (-1L << dataCenterIdBits)
      */
-    private long maxDataCenterId = ~(-1L << dataCenterIdBits);//-1L ^ (-1L << dataCenterIdBits)
+    private long maxDataCenterId = ~(-1L << dataCenterIdBits);
     /**
      * 毫秒内自增位
      */
@@ -103,7 +105,7 @@ public class IdCreator {
         }
         this.workerId = workerId;
         this.dataCenterId = dataCenterId;
-//        logger.info(String.format("worker starting. timestamp left shift %d, dataCenter id bits %d, worker id bits %d, sequence bits %d, workerId %d", timestampLeftShift, dataCenterIdBits, workerIdBits, sequenceBits, workerId));
+        logger.info(String.format("worker starting. timestamp left shift %d, dataCenter id bits %d, worker id bits %d, sequence bits %d, workerId %d", timestampLeftShift, dataCenterIdBits, workerIdBits, sequenceBits, workerId));
     }
 
     /**
@@ -116,7 +118,7 @@ public class IdCreator {
 
         //时间错误
         if (timestamp < lastTimestamp) {
-//            logger.error(String.format("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp));
+            logger.warning(String.format("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp));
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
 

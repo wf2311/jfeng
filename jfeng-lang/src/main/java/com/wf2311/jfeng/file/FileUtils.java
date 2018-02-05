@@ -52,9 +52,9 @@ public class FileUtils {
             type = SizeType.B;
         }
         if (type == SizeType.PB) {
-            return (double) size / SizeType.GB.getUtil() / SizeType.KB.getUtil();
+            return (double) size / SizeType.GB.getUnit() / SizeType.KB.getUnit();
         }
-        return (double) size / type.getUtil();
+        return (double) size / type.getUnit();
     }
 
     /**

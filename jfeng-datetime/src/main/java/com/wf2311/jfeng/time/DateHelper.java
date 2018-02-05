@@ -163,7 +163,6 @@ public final class DateHelper {
 
     private static DateStyle style0(Type type, Predicate<DateStyle> predicate) {
         return Arrays.stream(DateStyle.values())
-                .parallel()
                 .filter(style -> {
                     if (style.showOnly() || !type.equals(style.type())) {
                         return false;
