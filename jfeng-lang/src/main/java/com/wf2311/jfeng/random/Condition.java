@@ -1,10 +1,9 @@
-package com.wf2311.jfeng.lang.random;
+package com.wf2311.jfeng.random;
 
 /**
  * 随机数分布条件
  *
  * @author wangfeng
- * @time 2017/04/07 18:54.
  */
 public class Condition {
     /**
@@ -25,7 +24,9 @@ public class Condition {
     protected String value;
 
     public Condition(double rate, double start, double end) {
-        assert rate >= 0;
+        if (rate < 0 || start > end) {
+            throw new IllegalArgumentException();
+        }
         this.rate = rate;
         this.start = start;
         this.end = end;
@@ -44,7 +45,9 @@ public class Condition {
     }
 
     public Condition(double rate, String value) {
-        assert rate >= 0;
+        if (rate < 0) {
+            throw new IllegalArgumentException();
+        }
         this.rate = rate;
         this.value = value;
     }

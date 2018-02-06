@@ -1,6 +1,6 @@
 package com.wf2311.jfeng.lang;
 
-import com.wf2311.jfeng.lang.random.RandomUtil;
+import com.wf2311.jfeng.random.RandomUtil;
 import com.wf2311.jfeng.utils.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class CollectionUtilsTest {
     @Test
     public void test2_distinctByKey() {
         List<List<A>> collect = IntStream.range(0, 100).mapToObj(i -> IntStream.range(0, 10000)
-                .mapToObj(j -> new A(RandomUtil.getInt(i, 200), i)).collect(toList())
+                .mapToObj(j -> new A(RandomUtil.generateInt(i, 200), i)).collect(toList())
         ).collect(toList());
         collect.forEach(list -> System.out.println(list.get(0).getValue() + "\t:\t" + list.stream()
                 .filter(StreamUtils.distinctByFunction(A::getKey)).count()));

@@ -1,4 +1,4 @@
-package com.wf2311.jfeng.lang.random;
+package com.wf2311.jfeng.random;
 
 
 import com.google.common.util.concurrent.AtomicDouble;
@@ -11,15 +11,16 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 import static java.util.function.Function.identity;
 
 /**
- * 随机数生成器
+ * 概率随机数生成器
  *
  * @author wangfeng
  */
-public class RandomGenerator {
+public class RateRandomGenerator {
 
     private List<Condition> conditions;
     private double[] keys;
@@ -28,8 +29,8 @@ public class RandomGenerator {
     private Random random = new Random();
     private boolean updated = false;
 
-    public static RandomGenerator create(){
-        return new RandomGenerator();
+    public static RateRandomGenerator create() {
+        return new RateRandomGenerator();
     }
 
     /**
@@ -38,7 +39,7 @@ public class RandomGenerator {
      * @param condition
      * @return
      */
-    public RandomGenerator addCondition(Condition condition) {
+    public RateRandomGenerator addCondition(Condition condition) {
         ensureConditionsIsNotNull();
         conditions.add(condition);
         updated = true;
@@ -51,7 +52,7 @@ public class RandomGenerator {
      * @param conditions
      * @return
      */
-    public RandomGenerator addConditions(List<Condition> conditions) {
+    public RateRandomGenerator addConditions(List<Condition> conditions) {
         ensureConditionsIsNotNull();
         this.conditions.addAll(conditions);
         updated = true;
@@ -64,7 +65,7 @@ public class RandomGenerator {
      * @param conditions
      * @return
      */
-    public RandomGenerator setConditions(List<Condition> conditions) {
+    public RateRandomGenerator setConditions(List<Condition> conditions) {
         this.conditions = conditions;
         updated = true;
         return this;
@@ -88,26 +89,66 @@ public class RandomGenerator {
         }
     }
 
-    private double get0() {
+    private double generate() {
         init();
         double section0 = random(0, maxRate);
         Condition condition = getSection(section0);
         return random(condition.start, condition.end);
     }
 
-    public double getDouble() {
-        return get0();
+    /**
+     * 按概率产生一组double
+     */
+    public double[] generateDoubles(int size) {
+        return IntStream.range(0, size).mapToDouble(i -> generate()).toArray();
     }
 
-    public int getInt() {
-        return (int) get0();
+    /**
+     * 按概率产生一个double
+     */
+    public double generateDouble() {
+        return generate();
     }
 
-    public long getLong() {
-        return (long) get0();
+    /**
+     * 按概率产生一组int
+     */
+    public int[] generateInts(int size) {
+        return IntStream.range(0, size).map(i -> (int) generate()).toArray();
     }
 
-    public String getString() {
+    /**
+     * 按概率产生一个int
+     */
+    public int generateInt() {
+        return (int) generate();
+    }
+
+    /**
+     * 按概率产生一组long
+     */
+    public long[] generateLongs(int size) {
+        return IntStream.range(0, size).mapToLong(i -> (long) generate()).toArray();
+    }
+
+    /**
+     * 按概率产生一个long
+     */
+    public long generateLong() {
+        return (long) generate();
+    }
+
+    /**
+     * 按概率产生一组String
+     */
+    public String[] generateStrings(int size) {
+        return IntStream.range(0, size).mapToObj(i -> generateString()).toArray(String[]::new);
+    }
+
+    /**
+     * 按概率产生一个String
+     */
+    public String generateString() {
         init();
         double section0 = random(0, maxRate);
         Condition condition = getSection(section0);
