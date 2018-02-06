@@ -4,12 +4,10 @@ import com.wf2311.jfeng.lang.StreamUtils;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.LongStream;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * @author wf2311
@@ -54,14 +52,14 @@ public final class CollectionUtils {
     /**
      * 将列表按指定的特征分组，并用map存放
      */
-    public static <K, T> Map<K, List<T>> groupByFeature(List<T> list, Function<T, K> groupFeature) {
-        return groupByFeature(list, groupFeature, t -> t);
+    public static <K, T> Map<K, List<T>> getMapGroupByFeature(List<T> list, Function<T, K> groupFeature) {
+        return getMapGroupByFeature(list, groupFeature, t -> t);
     }
 
     /**
      * 将列表按指定的特征条件分组，并用map存放
      */
-    public static <K, V, T> Map<K, List<V>> groupByFeature(List<T> list, Function<T, K> groupFeature, Function<T, V> mappingToList) {
+    public static <K, V, T> Map<K, List<V>> getMapGroupByFeature(List<T> list, Function<T, K> groupFeature, Function<T, V> mappingToList) {
         Map<K, List<V>> map = list.stream()
                 //过滤掉为空的情况
                 .filter(StreamUtils.notNullResultFunction(groupFeature))
@@ -117,7 +115,7 @@ public final class CollectionUtils {
      * 得到列表中满足指定特征条件的子列表
      */
     public static <K, T> List<T> getSubListByGroupFeature(List<T> list, Function<T, K> groupFeature, K k) {
-        Map<K, List<T>> map = groupByFeature(list, groupFeature);
+        Map<K, List<T>> map = getMapGroupByFeature(list, groupFeature);
         return map.get(k);
     }
 
@@ -135,34 +133,36 @@ public final class CollectionUtils {
         return getSubListByGroupFeature(list, groupFeature, k);
     }
 
-    public static long factorial(int n) {
-        if (n > 20 || n < 0) {
-            throw new IllegalArgumentException(n + " is out of range");
-        }
-        return LongStream.rangeClosed(2, n).reduce(1, (a, b) -> a * b);
+    /**
+     * List类型转换
+     * <pre>
+     *     List<Integer> integerList = convertList(Arrays.asList("1","2","3"), s -> Integer.parseInt(s));
+     * </pre>
+     *
+     * @param source 源list
+     * @param func   转换函数
+     * @param <T>    源list类型
+     * @param <U>    目标list类型
+     */
+    public static <T, U> List<U> convertList(List<T> source, Function<T, U> func) {
+        return source.stream().map(func).collect(toList());
     }
 
-    public static <T> List<T> permutation(long no, List<T> items) {
-        return permutationHelper(no,
-                new LinkedList<>(Objects.requireNonNull(items)),
-                new ArrayList<>());
-    }
-
-    private static <T> List<T> permutationHelper(long no, LinkedList<T> in, List<T> out) {
-        if (in.isEmpty()) {
-            return out;
-        }
-        long subFactorial = factorial(in.size() - 1);
-        out.add(in.remove((int) (no / subFactorial)));
-        return permutationHelper((int) (no % subFactorial), in, out);
-    }
-
-    @SafeVarargs
-    @SuppressWarnings("varargs") // Creating a List from an array is safe
-    public static <T> Stream<Stream<T>> of(T... items) {
-        List<T> itemList = Arrays.asList(items);
-        return LongStream.range(0, factorial(items.length))
-                .mapToObj(no -> permutation(no, itemList).stream());
+    /**
+     * List转换为数组
+     * <pre>
+     *   Double[] doubleArr = convertArray(Arrays.asList("1","2","3"), Double::parseDouble, Double[]::new);
+     * </pre>
+     *
+     * @param source    源list
+     * @param func      转换函数
+     * @param generator 函数：产生一个数组
+     * @param <T>       源list类型
+     * @param <U>       目标list类型
+     * @return
+     */
+    public static <T, U> U[] convertArray(T[] source, Function<T, U> func, IntFunction<U[]> generator) {
+        return Arrays.stream(source).map(func).toArray(generator);
     }
 
 }

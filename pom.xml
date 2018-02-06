@@ -17,7 +17,6 @@
         <module>jfeng-mybatis-generator</module>
         <module>jfeng-datetime</module>
         <module>jfeng-repository-annoation</module>
-        <module>jfeng-repository-sql-aspect</module>
     </modules>
 
     <licenses>

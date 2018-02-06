@@ -13,6 +13,15 @@ import static org.junit.Assert.*;
  */
 public class ValidatorTest {
     @Test
+    public void test11(){
+        String regex = ("(\\w+):(\\d+):(\\d+);");
+        String regex2 = ("(\\w+:\\d+:\\d+;)");
+        String a = "12qv1:123:234;dd";
+        String match = Matchers.match(a, regex2);
+        System.out.println(match);
+    }
+
+    @Test
     public void testChinese() {
         String text = "123汉字abc";
         String c1 = "汉";
