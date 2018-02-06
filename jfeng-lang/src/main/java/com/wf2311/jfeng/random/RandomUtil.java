@@ -67,39 +67,41 @@ public class RandomUtil {
         if (end < start) {
             throw new IllegalArgumentException("数值start必须大于等于end");
         }
-        return RANDOM.longs(STREAM_SIZE, start, end).toArray();
+        return RANDOM.longs(size, start, end).toArray();
     }
 
 
     /**
      * 产生一个[start,end)的随机时间
      */
-    public static LocalDateTime generateLocalDateTime(LocalDateTime start, LocalDateTime end) {
-        return getLocalDateTimes(start, end, 1)[0];
+    public static LocalDateTime generateTime(LocalDateTime start, LocalDateTime end) {
+        return generateTimes(start, end, 1)[0];
     }
 
     /**
      * 产生一个大小为size的所有元素取值范围在[start,end)的随机时间数组
      */
-    public static LocalDateTime[] getLocalDateTimes(LocalDateTime start, LocalDateTime end, int size) {
+    public static LocalDateTime[] generateTimes(LocalDateTime start, LocalDateTime end, int size) {
         if (end.isBefore(start)) {
             throw new IllegalArgumentException("数值start必须晚于或等于end");
         }
         long millis = start.until(end, NANOS);
-        return Arrays.stream(generateLongs(0, millis, size)).mapToObj(start::plusNanos).toArray(LocalDateTime[]::new);
+        return Arrays.stream(generateLongs(0, millis, size))
+                .mapToObj(start::plusNanos)
+                .toArray(LocalDateTime[]::new);
     }
 
     /**
      * 产生一个[start,end)的随机日期
      */
-    public static LocalDate generateLocalDate(LocalDate start, LocalDate end) {
-        return generateLocalDates(start, end, 1)[0];
+    public static LocalDate generateDate(LocalDate start, LocalDate end) {
+        return generateDates(start, end, 1)[0];
     }
 
     /**
      * 产生一个大小为size的所有元素取值范围在[start,end)的随机日期数组
      */
-    public static LocalDate[] generateLocalDates(LocalDate start, LocalDate end, int size) {
+    public static LocalDate[] generateDates(LocalDate start, LocalDate end, int size) {
         if (end.isBefore(start)) {
             throw new IllegalArgumentException("数值start必须晚于或等于end");
         }
