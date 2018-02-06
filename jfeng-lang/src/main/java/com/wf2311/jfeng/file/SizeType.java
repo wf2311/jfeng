@@ -14,14 +14,14 @@ public enum SizeType {
     PB("PB", 1024 * 1024 * 1024 * 1024 * 1024L);
 
     private String name;
-    private long util;
+    private long unit;
 
     SizeType(String name, Long util) {
         this.name = name;
-        this.util = util;
+        this.unit = util;
     }
 
-    public Long getUtil() {
-        return util;
+    public Long getUnit() {
+        return unit;
     }
 }

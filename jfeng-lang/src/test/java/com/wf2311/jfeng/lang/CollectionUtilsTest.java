@@ -1,19 +1,16 @@
 package com.wf2311.jfeng.lang;
 
-import com.alibaba.fastjson.JSON;
-import com.wf2311.jfeng.lang.random.RandomUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.wf2311.jfeng.random.RandomUtil;
+import com.wf2311.jfeng.utils.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * @author wangfeng
@@ -24,73 +21,7 @@ public class CollectionUtilsTest {
     protected static final boolean MAN = true;
     protected static final boolean WOMAN = true;
 
-    @Data
-    @AllArgsConstructor
-    class User {
-        int id;
-        String name;
-        boolean sex;
-        Integer age;
 
-    }
-
-    private List<User> getUsers() {
-        int i = 1;
-        List<User> users = new ArrayList<>();
-        users.add(new User(i++, "aa", MAN, 18));
-        users.add(new User(i++, "ab", WOMAN, 19));
-        users.add(new User(i++, "ac", MAN, 20));
-        users.add(new User(i++, "ad", MAN, 18));
-        users.add(new User(i++, "ae", WOMAN, 22));
-        users.add(new User(i++, "af", MAN, 21));
-        users.add(new User(i++, "ba", WOMAN, 17));
-        users.add(new User(i++, "bb", MAN, 19));
-        users.add(new User(i++, "bc", MAN, 22));
-        users.add(new User(i++, "bd", WOMAN, 23));
-        users.add(new User(i++, "ca", MAN, 21));
-        users.add(new User(i++, "cd", WOMAN, 20));
-        users.add(new User(i++, "cd", MAN, 25));
-        users.add(new User(i++, "da", MAN, 23));
-        users.add(new User(i++, "dg", WOMAN, 16));
-        users.add(new User(i++, "df", MAN, 19));
-        users.add(new User(i++, "dq", MAN, 26));
-        users.add(new User(i++, "ea", WOMAN, 29));
-        users.add(new User(i++, "ed", WOMAN, null));
-        return users;
-    }
-
-    @Test
-    public void getMapGroupByFeature() throws Exception {
-        Assert.assertEquals(Arrays.asList(16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 29, null), CollectionUtils.getGroupFeatureList(getUsers(), User::getAge, Integer::compareTo));
-    }
-
-    @Test
-    public void getMapGroupByFeature2() throws Exception {
-        List<Integer> list = CollectionUtils.getGroupFeatureList(getUsers(), User::getAge, (o1, o2) -> -Integer.compare(o1, o2));
-        Assert.assertEquals(Arrays.asList(29, 26, 25, 23, 22, 21, 20, 19, 18, 17, 16, null), list);
-    }
-
-    @Test
-    public void getMapGroupByFeature3() throws Exception {
-        Map<Integer, List<User>> map = CollectionUtils.getMapGroupByFeature(getUsers(), User::getAge);
-        System.out.println(JSON.toJSONString(map));
-    }
-
-    @Test
-    public void test_getSubListByGroupFeature() {
-        List<User> list = CollectionUtils.getFirstSubListByGroupFeature(getUsers(), User::getAge, true);
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals(new Integer(16), list.get(0).getAge());
-        Assert.assertEquals("dg", list.get(0).getName());
-    }
-
-    @Test
-    public void test_getSubListByGroupFeature2() {
-        List<User> list = CollectionUtils.getSubListByGroupFeature(getUsers(), User::getAge, null);
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals(null, list.get(0).getAge());
-        Assert.assertEquals("ed", list.get(0).getName());
-    }
 
     @Test
     public void test_splitList() throws Exception {
@@ -130,7 +61,7 @@ public class CollectionUtilsTest {
     @Test
     public void test2_distinctByKey() {
         List<List<A>> collect = IntStream.range(0, 100).mapToObj(i -> IntStream.range(0, 10000)
-                .mapToObj(j -> new A(RandomUtil.getInt(i, 200), i)).collect(toList())
+                .mapToObj(j -> new A(RandomUtil.generateInt(i, 200), i)).collect(toList())
         ).collect(toList());
         collect.forEach(list -> System.out.println(list.get(0).getValue() + "\t:\t" + list.stream()
                 .filter(StreamUtils.distinctByFunction(A::getKey)).count()));
@@ -145,7 +76,6 @@ public class CollectionUtilsTest {
         Assert.assertEquals(true, CollectionUtils.isEmpty(list2));
     }
 
-    @Data
     class A {
         private int key;
         private int value;

@@ -1,9 +1,9 @@
-package com.wf2311.jfeng.lang;
+package com.wf2311.jfeng.utils;
+
+import com.wf2311.jfeng.lang.StreamUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -54,14 +54,14 @@ public final class CollectionUtils {
     /**
      * 将列表按指定的特征分组，并用map存放
      */
-    public static <K, T> Map<K, List<T>> getMapGroupByFeature(List<T> list, Function<T, K> groupFeature) {
-        return getMapGroupByFeature(list, groupFeature, t -> t);
+    public static <K, T> Map<K, List<T>> groupByFeature(List<T> list, Function<T, K> groupFeature) {
+        return groupByFeature(list, groupFeature, t -> t);
     }
 
     /**
      * 将列表按指定的特征条件分组，并用map存放
      */
-    public static <K, V, T> Map<K, List<V>> getMapGroupByFeature(List<T> list, Function<T, K> groupFeature, Function<T, V> mappingToList) {
+    public static <K, V, T> Map<K, List<V>> groupByFeature(List<T> list, Function<T, K> groupFeature, Function<T, V> mappingToList) {
         Map<K, List<V>> map = list.stream()
                 //过滤掉为空的情况
                 .filter(StreamUtils.notNullResultFunction(groupFeature))
@@ -117,7 +117,7 @@ public final class CollectionUtils {
      * 得到列表中满足指定特征条件的子列表
      */
     public static <K, T> List<T> getSubListByGroupFeature(List<T> list, Function<T, K> groupFeature, K k) {
-        Map<K, List<T>> map = getMapGroupByFeature(list, groupFeature);
+        Map<K, List<T>> map = groupByFeature(list, groupFeature);
         return map.get(k);
     }
 

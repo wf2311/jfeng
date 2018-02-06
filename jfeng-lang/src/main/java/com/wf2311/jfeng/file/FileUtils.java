@@ -3,7 +3,7 @@ package com.wf2311.jfeng.file;
 
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
-import com.wf2311.jfeng.exception.WfException;
+import com.wf2311.jfeng.exception.CustomException;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -25,10 +25,10 @@ public class FileUtils {
      * @return
      */
     public static long getSize(File file) {
-       return file.length();
+        return file.length();
     }
 
-    public static String md5(File file){
+    public static String md5(File file) {
         try {
             return Files.hash(file, Hashing.md5()).toString();
         } catch (IOException e) {
@@ -52,9 +52,9 @@ public class FileUtils {
             type = SizeType.B;
         }
         if (type == SizeType.PB) {
-            return (double) size / SizeType.GB.getUtil() / SizeType.KB.getUtil();
+            return (double) size / SizeType.GB.getUnit() / SizeType.KB.getUnit();
         }
-        return (double) size / type.getUtil();
+        return (double) size / type.getUnit();
     }
 
     /**
@@ -109,16 +109,19 @@ public class FileUtils {
      * @param targetFileName 需要查找的文件名
      * @param fileList       查找到的文件集合
      */
-    public static void findFiles(String baseDirName, String targetFileName, List fileList) {
+    public static void findFiles(String baseDirName, String targetFileName, List<File> fileList) {
 
-        File baseDir = new File(baseDirName);       // 创建一个File对象
-        if (!baseDir.exists() || !baseDir.isDirectory()) {  // 判断目录是否存在
-            throw new WfException("文件查找失败：" + baseDirName + "不是一个目录！");
+        File baseDir = new File(baseDirName);
+        if (!baseDir.exists() || !baseDir.isDirectory()) {
+            throw new CustomException("文件查找失败：" + baseDirName + "不是一个目录！");
         }
         String tempName;
         //判断目录是否存在
         File tempFile;
         File[] files = baseDir.listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
         for (int i = 0; i < files.length; i++) {
             tempFile = files[i];
             if (tempFile.isDirectory()) {
@@ -139,25 +142,27 @@ public class FileUtils {
      * @param baseDirName    查找的文件夹路径
      * @param targetFileName 需要查找的文件名
      */
-    public static List findFiles(String baseDirName, String targetFileName) {
-        List fileList = new ArrayList();
-        File baseDir = new File(baseDirName);       // 创建一个File对象
-        if (!baseDir.exists() || !baseDir.isDirectory()) {  // 判断目录是否存在
-            throw new WfException("文件查找失败：" + baseDirName + "不是一个目录！");
+    public static List<File> findFiles(String baseDirName, String targetFileName) {
+        List<File> fileList = new ArrayList<>();
+        File baseDir = new File(baseDirName);
+        if (!baseDir.exists() || !baseDir.isDirectory()) {
+            throw new CustomException("文件查找失败：" + baseDirName + "不是一个目录！");
         }
         String tempName;
         //判断目录是否存在
         File tempFile;
         File[] files = baseDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            tempFile = files[i];
-            if (tempFile.isDirectory()) {
-                fileList.addAll(findFiles(tempFile.getAbsolutePath(), targetFileName));
-            } else if (tempFile.isFile()) {
-                tempName = tempFile.getName();
-                if (wildcardMatch(targetFileName, tempName)) {
-                    // 匹配成功，将文件名添加到结果集
-                    fileList.add(tempFile.getAbsoluteFile());
+        if (files != null && files.length > 0) {
+            for (int i = 0; i < files.length; i++) {
+                tempFile = files[i];
+                if (tempFile.isDirectory()) {
+                    fileList.addAll(findFiles(tempFile.getAbsolutePath(), targetFileName));
+                } else if (tempFile.isFile()) {
+                    tempName = tempFile.getName();
+                    if (wildcardMatch(targetFileName, tempName)) {
+                        // 匹配成功，将文件名添加到结果集
+                        fileList.add(tempFile.getAbsoluteFile());
+                    }
                 }
             }
         }
@@ -207,84 +212,66 @@ public class FileUtils {
     /**
      * 读取一个文件
      *
-     * @param file 文件
+     * @param file    文件
      * @param charset 编码格式
      * @return
      * @throws IOException
      */
     public static List<String> readFile(File file, String charset)
             throws IOException {
-        FileInputStream fis = new FileInputStream(file);
-        InputStreamReader isr = new InputStreamReader(fis, charset);
-        BufferedReader br = new BufferedReader(isr);
-        LineNumberReader lnr = new LineNumberReader(br);
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader isr = new InputStreamReader(fis, charset);
+             BufferedReader br = new BufferedReader(isr);
+             LineNumberReader lnr = new LineNumberReader(br)) {
 
-        List<String> returnValue = new ArrayList<String>();
-        while (true) {
-            String tempStr = lnr.readLine();
-            if (tempStr == null)
-                break;
-            if (tempStr.length() < 2)
-                continue;
-            returnValue.add(tempStr);
+
+            List<String> returnValue = new ArrayList<String>();
+            while (true) {
+                String tempStr = lnr.readLine();
+                if (tempStr == null) {
+                    break;
+                }
+                if (tempStr.length() < 2) {
+                    continue;
+                }
+                returnValue.add(tempStr);
+            }
+            fis.close();
+            return returnValue;
         }
-        lnr.close();
-        br.close();
-        isr.close();
-        fis.close();
-        return returnValue;
-    }
-
-    /**
-     * 读取一个文件
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    public static List<String> readFile(File file) throws IOException {
-        return readFile(file, FileCharsetDetector.guessFileEncoding(file));
     }
 
     /**
      * 读取一个文件,并去掉每行前后的空格后返回
-     * @param file 文件
+     *
+     * @param file    文件
      * @param charset 编码格式
      */
     public static List<String> readFileNoDup(File file, String charset)
             throws IOException {
-        FileInputStream fis = new FileInputStream(file);
-        InputStreamReader isr = new InputStreamReader(fis, charset);
-        BufferedReader br = new BufferedReader(isr);
-        LineNumberReader lnr = new LineNumberReader(br);
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader isr = new InputStreamReader(fis, charset);
+             BufferedReader br = new BufferedReader(isr);
+             LineNumberReader lnr = new LineNumberReader(br);) {
 
-        Set<String> set = new HashSet<String>();
-        while (true) {
-            String tempStr = lnr.readLine();
-            if (tempStr == null)
-                break;
-            if (tempStr.length() < 2)
-                continue;
-            set.add(tempStr.trim());
+
+            Set<String> set = new HashSet<String>();
+            while (true) {
+                String tempStr = lnr.readLine();
+                if (tempStr == null) {
+                    break;
+                }
+                if (tempStr.length() < 2) {
+                    continue;
+                }
+                set.add(tempStr.trim());
+            }
+            List<String> returnValue = new ArrayList<String>(set.size());
+            returnValue.addAll(set);
+            return returnValue;
         }
-        lnr.close();
-        br.close();
-        isr.close();
-        fis.close();
-        List<String> returnValue = new ArrayList<String>(set.size());
-        returnValue.addAll(set);
-        return returnValue;
     }
 
-    /**
-     * 读取一个文件,并去掉每行前后的空格后返回
-     *
-     * @param file 文件
-     */
-    public static List<String> readFileNoDup(File file)
-            throws IOException {
-        return readFileNoDup(file, FileCharsetDetector.guessFileEncoding(file));
-    }
 
     /**
      * 添加内容到指定文件
@@ -296,17 +283,19 @@ public class FileUtils {
      * @throws IOException
      */
     public static void writeFile(File file, String content, boolean flag, String charset) throws IOException {
-        if (null == content || content.length() < 1)
+        if (null == content || content.length() < 1) {
             return;
+        }
         if (!file.exists()) {
             new File(file.getParent()).mkdirs();
             file.createNewFile();
         }
-        FileOutputStream fos = new FileOutputStream(file, flag);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
-        osw.write(content + "\r\n");
-        osw.flush();
-        osw.close();
+        try (FileOutputStream fos = new FileOutputStream(file, flag);
+             OutputStreamWriter osw = new OutputStreamWriter(fos, charset)) {
+            osw.write(content + "\r\n");
+            osw.flush();
+            osw.close();
+        }
     }
 
     /**
@@ -419,12 +408,14 @@ public class FileUtils {
             new File(file.getParent()).mkdirs();
             file.createNewFile();
         }
-        FileOutputStream fos = new FileOutputStream(file, flag);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
-        for (String temp : fileContent)
-            osw.write(temp + "\r\n");
-        osw.flush();
-        osw.close();
+
+        try (FileOutputStream fos = new FileOutputStream(file, flag);
+             OutputStreamWriter osw = new OutputStreamWriter(fos, charset)) {
+            for (String temp : fileContent) {
+                osw.write(temp + "\r\n");
+            }
+            osw.flush();
+        }
     }
 
     /**
@@ -471,7 +462,7 @@ public class FileUtils {
      * @param path        要写入的文件路径
      * @param fileContent 要写入的内容集合
      * @param flag        true\false，true则向现有文件中添加内容，否则覆盖原有内容
-     * @param charset   文件编码格式
+     * @param charset     文件编码格式
      */
     public static void writeFile(String path,
                                  List<String> fileContent, boolean flag, String charset) throws IOException {
@@ -656,39 +647,42 @@ public class FileUtils {
         File file = new File(fileName);
         String name = getMainName(file, false);
         String suffix = getSuffix(file);
-        String after= name +append+ POINT + suffix;
-        if (file.getParent()!=null){
-            after=file.getParent()+File.separator+after;
+        String after = name + append + POINT + suffix;
+        if (file.getParent() != null) {
+            after = file.getParent() + File.separator + after;
         }
         return after;
     }
 
-    public static String format(byte []bt){
-        int line=0 ;
-        StringBuilder buf=new StringBuilder() ;
-        for(byte d:bt){
-            if(line%16==0)
-                buf.append(String.format("%05x: ", line)) ;
-            buf.append(String.format("%02x  ", d)) ;
-            line++ ;
-            if(line%16==0)
+    public static String format(byte[] bt) {
+        int line = 0;
+        StringBuilder buf = new StringBuilder();
+        for (byte d : bt) {
+            if (line % 16 == 0) {
+                buf.append(String.format("%05x: ", line));
+            }
+            buf.append(String.format("%02x  ", d));
+            line++;
+            if (line % 16 == 0) {
                 buf.append("\n");
+            }
         }
-        buf.append("\n") ;
+        buf.append("\n");
         return buf.toString();
     }
 
     public static String format(File file) throws IOException {
-        byte[] bytes=readFile0(file);
+        byte[] bytes = readFile0(file);
         return format(bytes);
     }
 
-    private static byte[] readFile0(File file) throws IOException{
-        InputStream is=new FileInputStream(file) ;
-        int length=is.available() ;
-        byte bt[]=new byte[length] ;
-        is.read(bt) ;
-        return bt;
+    private static byte[] readFile0(File file) throws IOException {
+        try (InputStream is = new FileInputStream(file)) {
+            int length = is.available();
+            byte bt[] = new byte[length];
+            is.read(bt);
+            return bt;
+        }
     }
 
 }

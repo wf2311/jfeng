@@ -4,10 +4,10 @@ package com.wf2311.jfeng.exception;
  * 自定义异常
  * @author: wf2311
  */
-public class WfException extends RuntimeException {
+public class CustomException extends RuntimeException {
     protected int code;
 
-    public WfException() {
+    public CustomException() {
     }
 
     /**
@@ -15,7 +15,7 @@ public class WfException extends RuntimeException {
      *
      * @param code 错误代码
      */
-    public WfException(int code) {
+    public CustomException(int code) {
         super("code=" + code);
         this.code = code;
     }
@@ -25,7 +25,7 @@ public class WfException extends RuntimeException {
      *
      * @param message 错误消息
      */
-    public WfException(String message) {
+    public CustomException(String message) {
         super(message);
     }
 
@@ -34,7 +34,7 @@ public class WfException extends RuntimeException {
      *
      * @param cause 捕获的异常
      */
-    public WfException(Throwable cause) {
+    public CustomException(Throwable cause) {
         super(cause);
     }
 
@@ -44,7 +44,7 @@ public class WfException extends RuntimeException {
      * @param message 错误消息
      * @param cause   捕获的异常
      */
-    public WfException(String message, Throwable cause) {
+    public CustomException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -54,7 +54,7 @@ public class WfException extends RuntimeException {
      * @param code    错误代码
      * @param message 错误消息
      */
-    public WfException(int code, String message) {
+    public CustomException(int code, String message) {
         super(message);
         this.code = code;
     }

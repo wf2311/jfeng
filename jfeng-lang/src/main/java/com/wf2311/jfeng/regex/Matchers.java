@@ -18,7 +18,7 @@ public final class Matchers {
     /**
      * 用()包裹正则表达式
      */
-    public static String wrapBracket(String regex) {
+    protected static String wrapBracket(String regex) {
         return "(" + regex + ")";
     }
 
@@ -81,7 +81,7 @@ public final class Matchers {
     /**
      * 匹配第一个出现的手机号码
      */
-    public static String mobileMobile(String text) {
+    public static String matchMobile(String text) {
         return match(text, MOBILE);
     }
 
@@ -96,14 +96,14 @@ public final class Matchers {
      * 匹配第一个出现的电子邮箱
      */
     public static String matchEmail(String text) {
-        return match(text, MOBILE);
+        return match(text, EMAIL);
     }
 
     /**
      * 匹配所有的电子邮箱
      */
     public static List<String> matchAllEmail(String text) {
-        return matchAll(text, MOBILE);
+        return matchAll(text, EMAIL);
     }
 
 }
