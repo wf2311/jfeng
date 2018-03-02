@@ -19,6 +19,57 @@ public class FileUtils {
     public static final char POINT = '.';
 
     /**
+     * 判断文件类型
+     */
+    public static FileType getType(String filePath) throws IOException {
+        // 获取文件头
+        String fileHead = getFileHeader(filePath);
+
+        if (fileHead != null && fileHead.length() > 0) {
+            fileHead = fileHead.toUpperCase();
+            FileType[] fileTypes = FileType.values();
+
+            for (FileType type : fileTypes) {
+                if (fileHead.startsWith(type.getValue())) {
+                    return type;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 读取文件头
+     */
+    private static String getFileHeader(String filePath) throws IOException {
+        byte[] b = new byte[28];
+
+        try (InputStream inputStream = new FileInputStream(filePath)) {
+            inputStream.read(b, 0, 28);
+        }
+        return bytesToHex(b);
+    }
+
+    /**
+     * 将字节数组转换成16进制字符串
+     */
+    public static String bytesToHex(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (byte aSrc : src) {
+            int v = aSrc & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
      * 获取文件的大小,单位(b)
      *
      * @param file 文件
