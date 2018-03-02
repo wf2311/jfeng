@@ -25,6 +25,7 @@ public abstract class UpdateInterceptor extends CrudInterceptor {
     }
 
     @Before("aspect()")
+    @Override
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
