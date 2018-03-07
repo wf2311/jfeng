@@ -33,6 +33,7 @@ public abstract class InsertInterceptor extends CrudInterceptor {
      * @param joinPoint
      */
     @Before("aspect()")
+    @Override
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
