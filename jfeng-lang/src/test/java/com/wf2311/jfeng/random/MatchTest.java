@@ -1,13 +1,8 @@
 package com.wf2311.jfeng.random;
 
-import com.wf2311.jfeng.utils.CollectionUtils;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @author wf2311
@@ -31,16 +26,63 @@ public class MatchTest {
 
         List<Person> list = new ArrayList<>();
 
-        for (int i = 1; i <= 2000; i++) {
+        for (int i = 1; i <= 2003; i++) {
             list.add(new Person(i, generator.generateInt()));
         }
 
-        Map<Integer, List<Person>> map = CollectionUtils.getMapGroupByFeature(list, Person::getType);
-        List<List<Person>> collect = map.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
-        Integer min = collect.stream().map(List::size).sorted().findFirst().get();
+
+        List<Queue<Person>> queues = new ArrayList<>(5);
+        for (int i = 0; i < 5; i++) {
+            queues.add(new LinkedList<>());
+        }
+        for (Person p : list) {
+            queues.get(p.getType() - 1).add(p);
+        }
+
         List<List<Person>> result = new ArrayList<>();
 
+        boolean finish = false;
+        int count = 1;
+        while (!finish) {
 
+            List<Person> team = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                count++;
+                if (queues.get(i).size() > 0) {
+                    team.add(queues.get(i).poll());
+                } else {
+                    int index = findIndexOfMost(queues);
+                    if (index < 0) {
+                        finish = true;
+                        break;
+                    } else {
+                        team.add(queues.get(index).poll());
+                    }
+                }
+
+            }
+            if (team.size() > 0) {
+                result.add(team);
+            }
+        }
+
+        result.forEach(i -> System.out.println(i));
+        System.out.println(count);
+
+    }
+
+    private int findIndexOfMost(List<Queue<Person>> queues) {
+        int index = 0;
+        int max = 0;
+        for (int i = 0; i < queues.size(); i++) {
+            int size = queues.get(i).size();
+
+            if (size > max) {
+                index = i;
+                max = size;
+            }
+        }
+        return max == 0 ? -1 : index;
     }
 
     class Person {
@@ -66,6 +108,11 @@ public class MatchTest {
 
         public void setType(int type) {
             this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return id + "=" + type;
         }
     }
 }
