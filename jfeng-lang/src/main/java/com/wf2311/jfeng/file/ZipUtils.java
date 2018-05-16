@@ -1,9 +1,5 @@
 package com.wf2311.jfeng.file;
 
-import com.wf2311.jfeng.exception.CustomException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Expand;
-
 import java.io.*;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -76,31 +72,4 @@ public class ZipUtils {
 
     }
 
-    /****
-     * 解压
-     *
-     * @param zipPath         zip文件路径
-     * @param destinationPath 解压的目的地点
-     * @param encode           文件名的编码字符集
-     */
-    public static void unzip(String zipPath, String destinationPath, String encode) {
-        File zipFile = new File(zipPath);
-        if (!zipFile.exists()) {
-            throw new CustomException("zip file " + zipPath
-                    + " does not exist.");
-        }
-        Project project = new Project();
-        Expand expand = new Expand();
-        expand.setProject(project);
-        expand.setTaskType("unzip");
-        expand.setTaskName("unzip");
-        expand.setSrc(zipFile);
-        expand.setDest(new File(destinationPath));
-        expand.setEncoding(encode);
-        expand.execute();
-    }
-
-    public static void unzip(String zipPath, String destinationPath) {
-        unzip(zipPath, destinationPath, ENCODING);
-    }
 }

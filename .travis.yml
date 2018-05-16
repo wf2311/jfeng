@@ -1,15 +1,16 @@
 language: java
+jdk:
+  - oraclejdk8
 before_deploy:
-- mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
-- export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep
-  -v '\[')
+  - mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
+  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
 before_install:
-- echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-- echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
-install: mvn --settings .maven.xml install -DskipTests=true -Dgpg.skip -Dadditionalparam=-Xdoclint:none
-  -Dmaven.javadoc.skip=true -B -V
-script: mvn clean deploy --settings .maven.xml -DskipTests=true -Dadditionalparam=-Xdoclint:none
-  -Dmaven.javadoc.skip=true -B -U -Prelease
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+install:
+  - mvn --settings .maven.xml install -DskipTests=true -Dgpg.skip -Dadditionalparam=-Xdoclint:none -Dmaven.javadoc.skip=true -B -V
+script:
+  - mvn clean deploy --settings .maven.xml -DskipTests=true -Dadditionalparam=-Xdoclint:none -DcreateChecksum=true -B -U -Prelease
 env:
   global:
   - secure: C0c96dF5ypbV00F2QANknwZEGFmz3fab9LZgGRMwmn+Dh4X/SnzGVyINgcm81ecw/MNj1/ZmKbhF603rSNoUpIF2/O2CTqIyJYO0/NUZgoOIHr5Npj9jfLK3uHvCe8tYX+3IW8kF2EAK3b2xthd/CiXC0EmEhS5tXsuT78DfluOv/i/0QRNs0ZfBRcgp+CcRBFOXfPmGeLkOr3MoaG15LFyn5eXt8ZBZ8ymXTZBC4DCywEWrNdYg48Ii67qvYc3dvWliHPwCDsMv0tyWntrg+MNFLek/L7uH1VN4KBCHFuugQgWdGkVEEJzgS2NI6mkrxNFEOh/n7xCoFvs5rSdlHChzJW1FP3i/ikA1lensWaL4r3M85ySpY/dYrtw6q0x1FwKmLIx3HrsGh6g9GiPoar6uwe38loxVwIIBapuQF6y3I87VH3bcO7oiScDoGro3SlMNhnzw0Gzlz6a9PcnzyQgCrl31P+O2cXfc24IIU0O/1yFqH4pAluXluCk4qdHFfaTTj/fUoFbtxfEQhAVwAzbg4yxUOcKJ4ThjoUHWyaDHbYxCX/MyIMq9NuvOZxf94tP88C64zN108YNRE/va1iinUbL9Bpj1NQWwZKikemANx/yKcJWtBAKwlXUoJaGRD9sGQpTmziKK4ZTSIvUAlZyH709r2T3VvGeqlo6oKiI=
