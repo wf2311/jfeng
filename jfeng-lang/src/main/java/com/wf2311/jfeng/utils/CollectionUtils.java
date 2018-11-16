@@ -5,6 +5,7 @@ import com.wf2311.jfeng.lang.StreamUtils;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
@@ -53,7 +54,7 @@ public final class CollectionUtils {
      * 将列表按指定的特征分组，并用map存放
      */
     public static <K, T> Map<K, List<T>> getMapGroupByFeature(List<T> list, Function<T, K> groupFeature) {
-        return getMapGroupByFeature(list, groupFeature, t -> t);
+        return getMapGroupByFeature(list, groupFeature, Function.identity());
     }
 
     /**
@@ -83,7 +84,7 @@ public final class CollectionUtils {
         List<K> ks = list.stream().filter(StreamUtils.notNullResultFunction(groupFeature))
                 .map(groupFeature).distinct().sorted().collect(toList());
         boolean hasNullFeature = list.stream().anyMatch(StreamUtils.nullResultFunction(groupFeature));
-        if (hasNullFeature){
+        if (hasNullFeature) {
             ks.add(null);
         }
         return ks;
@@ -105,7 +106,7 @@ public final class CollectionUtils {
         }
         List<K> ks = stream.collect(toList());
         boolean hasNullFeature = list.stream().anyMatch(StreamUtils.nullResultFunction(groupFeature));
-        if (hasNullFeature){
+        if (hasNullFeature) {
             ks.add(null);
         }
         return ks;
@@ -163,6 +164,38 @@ public final class CollectionUtils {
      */
     public static <T, U> U[] convertArray(T[] source, Function<T, U> func, IntFunction<U[]> generator) {
         return Arrays.stream(source).map(func).toArray(generator);
+    }
+
+    /**
+     * 将Map<K, V> 转为 Map<V,List<K>>
+     * <br/>
+     * 将
+     * <pre>
+     * Map<String, String> values = new HashMap<String, String>();
+     * values.put("aa", "20");
+     * values.put("bb", "30");
+     * values.put("cc", "20");
+     * values.put("dd", "45");
+     * values.put("ee", "35");
+     * values.put("ff", "35");
+     * values.put("gg", "20");
+     * </pre>
+     * 转为
+     * <pre>
+     *      "20" -> ["aa","cc","gg"]
+     *      "30" -> ["bb"]
+     *      "35" -> ["ee","ff"]
+     *      "45" -> ["dd"]
+     * </pre>
+     *
+     * @see <a href="https://stackoverflow.com/questions/39363997/converting-mapk-v-to-mapv-listk">Converting Map<K, V> to Map<V,List<K>></a>
+     */
+    public <V, K> Map<V, List<K>> mapInvert(Map<K, V> map) {
+        return map.entrySet()
+                .stream()
+                .collect(Collectors.groupingBy(Map.Entry::getValue,
+                        Collectors.mapping(Map.Entry::getKey,
+                                Collectors.toList())));
     }
 
 }
